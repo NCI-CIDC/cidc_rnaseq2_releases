@@ -1,4 +1,4 @@
-name: cidc_pipeline_template
+name: cidc_rnaseq
 channels:
 - conda-forge
 - bioconda
