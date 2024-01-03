@@ -1,4 +1,4 @@
-# cidc_pipeline_template
+# cidc_rnaseq
 
 *Example workflow framework to assist with developing pipelines in Snakemake. This framework is currently set up to perform the following across sample files: read pre-processing (adapter trimming and quality filtering), assessment of sample contamination, read QC, reference genome alignment, and obtainment of alignment metrics.*
 
