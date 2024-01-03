@@ -1,0 +1,7 @@
+name: trimadapters
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - cutadapt==4.4
+    - snakemake==7.32.4

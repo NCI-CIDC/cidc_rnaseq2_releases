@@ -1,0 +1,7 @@
+name: qualityfilter
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - trimmomatic==0.39
+    - snakemake==7.32.4

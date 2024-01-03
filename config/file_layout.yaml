@@ -1,0 +1,54 @@
+## INITIALIZE
+genome:
+    fa: "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
+    bwt: "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.bwt"
+    size: "genome.size"
+    fai: "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai"
+    blacklist: "hg38-blacklist.v2.bed"
+    filtered_fai: "GCA_000001405.15_GRCh38_no_alt_analysis_set_filtered.fna.fai"
+    bed: "GCA_000001405.15_GRCh38_no_alt_analysis_set_filtered.bed"
+    dhs: "DHS_hg38.bed"
+
+annot:
+    gtf: "GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.gtf"
+    bed: "GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.bed"
+    bw: "hg38.phastCons100way.bw"
+    
+## INGEST
+input:
+    input_fastq: "{{sample}}_{read}.fastq.gz"
+cutadapt:
+    cutadapt_fastq: "{{sample}}_{read}"
+rqual_filter:
+    qfilter_fastq_single: "{{sample}}_{read}_qual.fastq.gz"
+    qfilter_fastq_paired: "{{sample}}_{read}{paired}_qual.fastq.gz"
+
+## CONTAMINATION
+centrifuge:
+    classification: "{sample}_classification.txt"
+    report: "{sample}_report.txt"
+    tar: "p_compressed+h+v.tar.gz"
+    db: "p_compressed+h+v.1.cf"
+
+## MAPPING
+bam:
+    bam: "{sample}.bam"
+    index: "{sample}.bam.bai"
+    dup_bam: "{sample}_dup.bam"
+    flags_bam: "{sample}_flags.bam"
+    blacklist_bam: "{sample}_blacklist.bam"
+    fixmate_bam: "{sample}_fixmate.bam"
+    filtered_bam: "{sample}_filtered.bam"
+    filtered_index: "{sample}_filtered.bam.bai"
+    metrics: "{sample}_marked_duplicates_metrics.txt"
+    sampled_bam: "{sample}_sampled.bam"
+    sampled_index: "{sample}_sampled.bam.bai"
+
+rseqc:
+    bamqc_txt: "{sample}_bam_qc.txt"
+    bamgc_txt: "{sample}_bam_gc.txt"
+    bamgc_r: "{sample}.GC_plot.r"
+
+fastqc:
+    targz: "{sample}_filtered_fastqc.tar.gz"
+

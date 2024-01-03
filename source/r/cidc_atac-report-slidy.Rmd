@@ -1,0 +1,137 @@
+---
+title: 
+output: slidy_presentation
+date: "2023-11-27"
+footer: "CIMAC-CIDC"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## CIDC ATAC-Seq 
+
+The pipeline performs the following across sample files: read pre-processing (adapter trimming and quality filtering), read QC, reference genome alignment using BWA, obtaining alignment metrics and filtering, CNV analysis, peak calling with MACS using settings optimal for detection of chromatin-accessibility signatures, peak QC and quantification with ChIPQC, peak annotation and functional analysis, and motif analysis using HOMER.
+<br> <br> <br>
+```{r workflow_diagram, out.width = "1000px", fig.align='center'}
+knitr::include_graphics(file.path(predir,'cidc_atac_workflow.png'))
+```
+
+
+## Sample Metadata
+```{r sample_mta, echo=FALSE, results='asis'}
+mta = read.csv(file.path(predir,'sample_metadata.csv'),h=T,stringsAsFactors=F)
+mta = mta[,!colSums(is.na(mta))==nrow(mta)]
+knitr::kable(mta)
+```
+
+
+## Alignment
+### Summary Stats
+```{r bam_qc, results='asis'}
+bam.qc = read.csv(file.path(predir,'rseqc/bam_qc_parsed.tab'),sep='\t',h=T,stringsAsFactors=F)
+bam.qc = bam.qc[,c('sample_id','total','unmapped','non_unique','unique','read_1','read_2','plus_strand','minus_strand')]
+rownames(bam.qc) = bam.qc$sample_id
+bam.qc = bam.qc[,-1]
+knitr::kable(bam.qc)
+```
+### GC Content
+```{r bam_gc, results='asis'}
+bam.gc=read.csv(file.path(predir,'rseqc/bam_gc_parsed.tab'),sep='',h=T,stringsAsFactors=F)
+rownames(bam.gc) = bam.gc$sample_id
+bam.gc = bam.gc[,-1]
+knitr::kable(bam.gc)
+```
+
+```{r bam_gc_plots}
+ bam.gc.plots = list.files(file.path(predir,'rseqc'), pattern='*GC_plot.png', full.names=T)
+ knitr::include_graphics(bam.gc.plots)
+```
+
+
+
+## Peaks - Read Enrichment
+### Summary Stats
+```{r chipqc_summary,  results='asis'}
+
+chipqc.all = data.frame()
+for(s in 1:length(mta$samid)){
+  samid = mta$samid[s]
+
+  chipqc.samid = read.csv(file.path(predir,paste0('chipqc/',samid,'_chipqc.csv')),h=T,stringsAsFactors=F)
+  rownames(chipqc.samid) = chipqc.samid$SampleID
+  chipqc.samid = chipqc.samid[,-1]
+
+  chipqc.all = rbind(chipqc.all, chipqc.samid)
+
+}
+
+knitr::kable(chipqc.all)
+
+```
+
+### Peak Profiles
+```{r peak_profiles, out.width = "600px"}
+knitr::include_graphics(file.path(predir,'analysis/report/PeakProfile.png'))
+```
+
+### FRIP
+```{r peak_rip, out.width = "600px"}
+knitr::include_graphics(file.path(predir,'analysis/report/Rip.png'))
+knitr::include_graphics(file.path(predir,'analysis/report/Rap.png'))
+```
+
+### CC Score
+```{r peak_cc, out.width = "600px"}
+knitr::include_graphics(file.path(predir,'analysis/report/CCPlot.png'))
+```
+
+
+
+## Peaks - Annotation
+### Summary Stats
+```{r peak_annot_summary,  results='asis'}
+annot.all = data.frame()
+for(s in 1:length(mta$samid)){
+  samid = mta$samid[s]
+  
+  annot.samid = read.csv(file.path(predir,paste0('peak/',samid,'_peaks_annot_stat.csv')),h=T,stringsAsFactors=F)
+  annot.samid = data.frame(t(annot.samid))
+  colnames(annot.samid) = annot.samid[1,]
+  annot.samid = annot.samid[-1,,drop=F]
+  rownames(annot.samid) = samid
+
+  annot.all = rbind(annot.all, annot.samid)
+}
+knitr::kable(annot.all)
+```
+
+### Genomic Features
+```{r peak_annot_bar}
+annot.bars = list.files(file.path(predir,'peak'), pattern='*annot_bar.png', full.names=T)
+knitr::include_graphics(annot.bars)
+```
+
+```{r peak_annot_bar_tss}
+annot.bars.tss = list.files(file.path(predir,'peak'), pattern='*annot_bar_tss.png', full.names=T)
+knitr::include_graphics(annot.bars.tss)
+```
+
+
+
+## Peaks - Functional Enrichment
+```{r peak_ptw_dot_go}
+ptw.dots.go = list.files(file.path(predir,'ptw'), pattern='*gobp_ptw_dot.png', full.names=T)
+knitr::include_graphics(ptw.dots.go)
+```
+
+```{r peak_ptw_dot_kegg}
+ptw.dots.kegg = list.files(file.path(predir,'ptw'), pattern='*kegg_ptw_dot.png', full.names=T)
+knitr::include_graphics(ptw.dots.kegg)
+```
+
+## Genome Tracks
+```{r genome_tracks, out.width = "1000px", fig.align='center'}
+tracks = list.files(file.path(predir,'track'), pattern='*_track.png', full.names=T)
+knitr::include_graphics(tracks)
+```

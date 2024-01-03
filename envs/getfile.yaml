@@ -1,0 +1,11 @@
+name: getfile
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - gsutil==5.26
+    - awscli==2.13.25
+    - parallel-fastq-dump==0.6.7
+    - openssl==3.1.3
+    - python==3.10.12
+    - snakemake==7.32.4

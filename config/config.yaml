@@ -1,0 +1,30 @@
+## workflow set up
+# working output dir
+predir: '/media/scratch/cherikhsr/pipeline_template_output'
+# source dir for supporting scripts
+srcdir: '/media/scratch/cherikhsr/cidc_pipeline_template/source'
+# file to write running log
+log_file: '/media/scratch/cherikhsr/pipeline_template_output/pipeline.log'
+# number of CPU cores dedicated to entire workflow
+ncores: 16
+
+
+## output file paths layout file
+file_layout: 'config/file_layout.yaml'
+
+
+## reference genome download locations file
+reference: 'config/reference_dev.csv'
+
+
+## sample metadata file
+sample_metadata: 'config/sample_metadata_dev.csv'
+
+
+## preprocess options
+quality_trim: '20'
+
+
+## cloud program [gsutil, aws] and bucket location
+cloud_prog: 'gsutil'
+archive_bucket: ''
