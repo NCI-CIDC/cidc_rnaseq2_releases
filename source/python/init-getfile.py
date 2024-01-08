@@ -30,8 +30,9 @@ parser=argparse.ArgumentParser()
 parser.add_argument("--src", help="Source dir")
 parser.add_argument("--ends", help="Single or paired end indication")
 parser.add_argument("--samid", help="Sample IDs")
-parser.add_argument("--fastq1", help="Fastq read file 1")
+parser.add_argument("--fastq1", help="Fastq read file 1", default='', required=False, nargs='?', const='')
 parser.add_argument("--fastq2", help="Fastq read file 2", default='', required=False, nargs='?', const='')
+parser.add_argument("--bam", help="Bam read input", default='', required=False, nargs='?', const='')
 parser.add_argument("--cloud", help="Cloud program name")
 parser.add_argument("--fastqdump", help="SRA kit fastqdump program name")
 parser.add_argument("--openssl", help="Openssl program name", default='', required=False, nargs='?', const='')
@@ -54,6 +55,7 @@ ENDS = str(args.ends).split(',')
 SAMID = str(args.samid).split(',')
 FASTQ_1 = str(args.fastq1).split(',')
 FASTQ_2 = str(args.fastq2).split(',')
+BAM = str(args.bam).split(',')
 CLOUD = args.cloud
 FASTQDUMP = args.fastqdump
 OPENSSL = args.openssl
@@ -67,6 +69,8 @@ output = str(args.output).split(',')
 ## Get files to pull
 if ENDS == ['1']:
     in_file = [FASTQ_1[i[0]] for i in enumerate(SAMID) if SAMID[i[0]] == sample]
+elif ENDS != ['1'] and BAM != ['']:
+    in_file = [BAM[i[0]] for i in enumerate(SAMID) if SAMID[i[0]] == sample]
 else:
     in_file_1 = [FASTQ_1[i[0]] for i in enumerate(SAMID) if SAMID[i[0]] == sample][0]
     in_file_2 = [FASTQ_2[i[0]] for i in enumerate(SAMID) if SAMID[i[0]] == sample][0]
@@ -74,7 +78,6 @@ else:
     ## if using SRA that are paired end, only pass first file but will use split-3 in fastq-dump call
     if(in_file_1[0][0:3] == 'SRR'):
         in_file = [in_file_1]
-
 
 
 ## Run command
