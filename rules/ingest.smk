@@ -3,7 +3,7 @@ rule getfile:
     input:
         rules.directory_setup.output
     output:
-        expand(paths.input.input_fastq, read=ENDS)
+        expand(paths.input.input_fastq, read=ENDS) if not BAM_INPUT else paths.input.input_bam
     benchmark:
         'benchmark/{sample}_getfile.tab'
     log:
@@ -17,20 +17,21 @@ rule getfile:
         samid=','.join(SAMID),
         fastq1=','.join(FASTQ_1),
         fastq2=','.join(FASTQ_2),
+        bam=','.join(BAM),
         cloud=CLOUD,
-        output_joined=','.join(expand(paths.input.input_fastq, read=ENDS))
+        output_joined=','.join(expand(paths.input.input_fastq, read=ENDS)) if not BAM_INPUT else paths.input.input_bam
     priority: 2
     threads: max(1,min(8,NCORES))
     shell:
         '''
           echo python3 {params.srcdir}/python/init-getfile.py --src {params.srcdir} --ends {params.ends} \
-          --samid {params.samid} --fastq1 {params.fastq1} --fastq2 {params.fastq2} \
+          --samid {params.samid} --fastq1 {params.fastq1} --fastq2 {params.fastq2} --bam {params.bam} \
           --cloud {params.cloud} --fastqdump parallel-fastq-dump \
           --sample {params.sample} --output {params.output_joined} \
           > {log}
 
           python3 {params.srcdir}/python/init-getfile.py --src {params.srcdir} --ends {params.ends} \
-          --samid {params.samid} --fastq1 {params.fastq1} --fastq2 {params.fastq2} \
+          --samid {params.samid} --fastq1 {params.fastq1} --fastq2 {params.fastq2} --bam {params.bam} \
           --cloud {params.cloud} --fastqdump parallel-fastq-dump \
           --sample {params.sample} --output {params.output_joined} \
           2>> {log}
@@ -39,10 +40,31 @@ rule getfile:
           conda env export --no-builds > info/getfile.info
         '''
 
+## TODO rule for converting bam to PE fastq
+rule bam2fastq:
+    input:
+        bam=paths.input.input_bam
+    output:
+        fq1=expand(paths.input.input_fastq, read=['1']),
+        fq2=expand(paths.input.input_fastq, read=['2']),
+    benchmark:
+        'benchmark/{sample}_bam2fastq.tab'
+    log:
+        'log/{sample}_bam2fastq.log'
+    conda:
+        SOURCEDIR+"/../envs/samtools.yaml"
+    priority: 3
+    threads: max(1,min(8,NCORES))
+    shell:
+        '''
+          samtools collate -@ {threads} -u -O {input.bam} | \
+          samtools fastq -@ {threads} -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null -n
+        '''
+
 ### Optionally trim adapters with cutadapt
 rule trimadapters:
     input:
-        fa=rules.getfile.output
+        fa=expand(paths.input.input_fastq, read=ENDS)
     output:
         [x + TRIM_ADAPTERS_OUTPUT for x in expand(paths.cutadapt.cutadapt_fastq, read=ENDS)]
     benchmark:
@@ -82,7 +104,7 @@ rule trimadapters:
 ## Optionally quality-trim reads with Trimmomatic
 rule qualityfilter:
     input:
-        rules.trimadapters.output if TRIM_FP or TRIM_TP else rules.getfile.output
+        rules.trimadapters.output if TRIM_FP or TRIM_TP else expand(paths.input.input_fastq, read=ENDS)
     output:
         expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U']) if len(ENDS)==2 else expand(paths.rqual_filter.qfilter_fastq_single, read=ENDS)
     benchmark:
