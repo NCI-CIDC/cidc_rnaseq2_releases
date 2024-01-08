@@ -1,10 +1,10 @@
 ## workflow set up
 # working output dir
-predir: '/media/scratch/cherikhsr/pipeline_template_output'
+predir: '/media/scratch/cherikhsr/rnaseq_test_output'
 # source dir for supporting scripts
-srcdir: '/media/scratch/cherikhsr/cidc_pipeline_template/source'
+srcdir: '/media/scratch/cherikhsr/cidc_rnaseq/source'
 # file to write running log
-log_file: '/media/scratch/cherikhsr/pipeline_template_output/pipeline.log'
+log_file: '/media/scratch/cherikhsr/rnaseq_test_output/pipeline.log'
 # number of CPU cores dedicated to entire workflow
 ncores: 16
 
