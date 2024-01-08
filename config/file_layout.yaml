@@ -17,6 +17,7 @@ annot:
 ## INGEST
 input:
     input_fastq: "{{sample}}_{read}.fastq.gz"
+    input_bam: "{sample}_input.bam"
 cutadapt:
     cutadapt_fastq: "{{sample}}_{read}"
 rqual_filter:
