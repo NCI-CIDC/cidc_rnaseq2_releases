@@ -25,6 +25,10 @@ sample_metadata: 'config/sample_metadata_dev.csv'
 quality_trim: '20'
 
 
+## RSEeQC module input option. Housekeeping bam will be used for qc rules when option is 'housekeeping'
+rseqc: 'housekeeping'
+
+
 ## cloud program [gsutil, aws] and bucket location
 cloud_prog: 'gsutil'
 archive_bucket: ''

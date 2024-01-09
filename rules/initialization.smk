@@ -147,3 +147,23 @@ rule retrieve_conservation_bw:
     shell:
         "gsutil cp {params.dhs_uri} {output}"
 
+## Retrieve hg38 RefSeq genes bed and hg38 housekeeping genes bed for the RSeQC module
+rule retrieve_rseqc_beds:
+    output:
+       bed=paths.rseqc.refseq_bed,
+       housekeeping_bed=paths.rseqc.housekeeping_bed
+    benchmark:
+       'benchmark/retrieve_rseqc_beds.tab'
+    log:
+       'log/retrieve_rseqc_beds.log'
+    params:
+       bed_uri=RSEQC_BED_URI,
+       housekeeping_uri=RSEQC_HOUSEKEEPING_BED_URI
+    shell:
+       '''
+       echo "gsutil cp {params.bed_uri} {output.bed}.gz && gunzip -k {output.bed}.gz" | tee {log}
+       gsutil cp {params.bed_uri} {output.bed}.gz && gunzip -k {output.bed}.gz 2>> {log}
+
+       echo "gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz" | tee -a {log}
+       gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz 2>> {log}
+       '''

@@ -85,6 +85,8 @@ GENOME_BLACKLIST_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_b
 GENOME_DHS_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_dhs", "google_bucket_URI"].item()
 GENOME_CONSERVATION_URI = reference_df.loc[reference_df["ref_file_name"]=="conservation", "google_bucket_URI"].item()
 CFUG_REF = reference_df.loc[reference_df["ref_file_name"]=="centrifuge", "google_bucket_URI"].item()
+RSEQC_BED_URI = reference_df.loc[reference_df["ref_file_name"]=="rseqc_bed", "google_bucket_URI"].item()
+RSEQC_HOUSEKEEPING_BED_URI =  reference_df.loc[reference_df["ref_file_name"]=="rseqc_housekeeping_bed", "google_bucket_URI"].item()
 
 # Sample info
 ## List of samples to process
@@ -131,6 +133,8 @@ else:
 ## Quality trimming option
 QUAL_CUTOFF = config["quality_trim"]
 
+## RSeQC module option
+RSEQC = config["rseqc"]
 
 # Cloud options retrieving files and archiving results
 CLOUD  = config["cloud_prog"]
@@ -155,8 +159,15 @@ OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
           expand(paths.rseqc.bamqc_txt, sample=SAMID),
           expand(paths.rseqc.bamgc_txt, sample=SAMID),
           expand(paths.fastqc.targz, sample=SAMID)]
+          expand(paths.rseqc.rd_txt, sample=SAMID),
+          expand(paths.rseqc.gbc_png, sample=SAMID),
+          expand(paths.rseqc.js_plot, sample=SAMID),
+          expand(paths.rseqc.is_pdf, sample=SAMID)]
 
-
+if RSEQC == "housekeeping":
+    OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))
+else:
+    OUTPUT.append(expand(paths.rseqc.ts_xls, sample=SAMID))
 
 #########################################
 #    Define any onstart or onsuccess    #
@@ -199,3 +210,4 @@ include: "./rules/initialization.smk"
 include: "./rules/ingest.smk"
 include: "./rules/contamination.smk"
 include: "./rules/mapping.smk"
+include: "./rules/rseqc.smk"

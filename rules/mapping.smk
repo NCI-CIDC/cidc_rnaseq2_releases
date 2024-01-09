@@ -218,3 +218,68 @@ rule bam_gc:
         conda env export --no-builds > info/rseqc.info
       '''
 
+## Generate stats for the aligned bam (RSeQC module)
+rule align_bam_stats:
+   input:
+       bam=rules.run_bwa.output,
+       idx=rules.index_bam.output
+   output:
+       paths.bam.stats
+   benchmark:
+       'benchmark/{sample}_align_bam_stats.tab'
+   log:
+       'log/{sample}_align_bam_stats.log'
+   conda:
+       SOURCEDIR+"/../envs/qc.yaml"
+   shell:
+       '''
+         echo "samtools stats {input.bam} | grep ^SN | cut -f 2- > {output}" | tee {log}
+         samtools stats {input.bam} | grep ^SN | cut -f 2- > {output} 2>> {log}
+       '''
+
+## Subsample the aligned bam for use in the RSeQC module; the output bam is sorted
+rule downsample_bam:
+    input:
+        stats=rules.align_bam_stats.output,
+        bam=rules.run_bwa.output,
+        idx=rules.index_bam.output
+    output:
+        seq=paths.bam.size,
+        bam=paths.bam.downsampled_bam,
+        bai=paths.qc.downsampled_bai
+    benchmark:
+        'benchmark/{sample}_downsample_bam.tab'
+    log:
+        'log/{sample}_downsample_bam.log'
+    conda:
+        SOURCEDIR+"/../envs/qc.yaml"
+    params:
+        srcdir=SOURCEDIR
+    threads: max(1,min(8,NCORES))
+    shell:
+        '''
+          echo "bash {params.srcdir}/shell/downsample_bam.sh {input.stats} {output.seq} {input.bam} {output.bam} {output.bai} {threads}" | tee {log}
+          bash {params.srcdir}/shell/downsample_bam.sh {input.stats} {output.seq} {input.bam} {output.bam} {output.bai} {threads} 2>> {log}
+        '''
+
+## Generate bam with only the housekeeping genes from the subsampled bam for use in the RSeQC module
+rule housekeeping_bam:
+    input:
+        bam=rules.downsample_bam.output.bam,
+        bai=rules.downsample_bam.output.bai,
+        stats=rules.downsample_bam.output.seq,
+        bed=rules.retrieve_rseqc_beds.output.housekeeping_bed
+    output:
+        bam=paths.bam.housekeeping_bam,
+        bai=paths.bam.housekeeping_bai
+    benchmark:
+        'benchmark/{sample}_housekeeping_bam.tab'
+    log:
+        'log/{sample}_housekeeping_bam.log'
+    conda:
+        SOURCEDIR+"/../envs/qc.yaml"
+    shell:
+        '''
+          echo "bedtools intersect -a {input.bam} -b {input.bed} > {output.bam} && samtools index {output.bam} > {output.bai}" | tee {log}
+          bedtools intersect -a {input.bam} -b {input.bed} > {output.bam} && samtools index {output.bam} > {output.bai} 2>> {log}
+        '''
