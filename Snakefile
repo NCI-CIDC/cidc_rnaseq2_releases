@@ -92,6 +92,7 @@ SAMID = utils.toList(sample_metadata_df['samid'])
 ## List of input files
 FASTQ_1 = utils.toList(sample_metadata_df['fastq_file_1'])
 FASTQ_2 = utils.toList(sample_metadata_df['fastq_file_2'])
+BAM = utils.toList(sample_metadata_df['bam_file'])
 ## Adapter sequences
 FP_ADAPTERS   = [x.strip() for x in utils.toList(sample_metadata_df['fivep_adapter_seq'])]
 TP_ADAPTERS   = [x.strip() for x in utils.toList(sample_metadata_df['threep_adapter_seq'])]
@@ -112,7 +113,7 @@ NCORES  = int(config["ncores"])
 SUBDIRS  = 'benchmark log info progress genome annot input analysis analysis/data analysis/report'
 
 ## Set single or paired end
-if (FASTQ_2 != ['']):
+if (FASTQ_2 != [''] or BAM != ['']):
     ENDS  = ['1','2']
 else:
     ENDS  = ['1']
@@ -120,7 +121,11 @@ else:
 TRIM_FP = sum([x == ''  for x in FP_ADAPTERS]) == 0
 TRIM_TP = sum([x == ''  for x in TP_ADAPTERS]) == 0
 TRIM_ADAPTERS_OUTPUT = '.fastq.gz' if (TRIM_FP or TRIM_TP) else '.skipped'
-
+## Set whether using FASTQ or BAM input
+if (FASTQ_1 == ['']):
+    BAM_INPUT = True
+else:
+    BAM_INPUT = False
 
 # Preprocessing options
 ## Quality trimming option
