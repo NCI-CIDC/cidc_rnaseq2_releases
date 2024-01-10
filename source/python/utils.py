@@ -261,7 +261,7 @@ def sortBamOutput(temp, iontorrent=0, cram=0):
 ## Merge RSeQC results, return paths to merged results
 def mergeRSEQC(srcdir, run_read_dist=0):
     #retvals = ['sample_metadata.csv','rseqc/bam_qc_parsed.tab', 'rseqc/bam_gc_parsed.tab', 'rseqc/bam_jc_parsed.tab', 'feature_counts/fragment_count_matrix.tab.gz','feature_counts/gene_lengths.tab']
-    retvals = ['sample_metadata.csv','rseqc/bam_qc_parsed.tab', 'rseqc/bam_gc_parsed.tab']
+    retvals = ['rseqc/bam_qc_parsed.tab', 'rseqc/bam_gc_parsed.tab']
 
     ## QC
     snakemake.shell("find rseqc | grep -P 'bam_qc.txt$' > bam_qc_outfiles.txt")
