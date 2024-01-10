@@ -122,7 +122,7 @@ TRIM_FP = sum([x == ''  for x in FP_ADAPTERS]) == 0
 TRIM_TP = sum([x == ''  for x in TP_ADAPTERS]) == 0
 TRIM_ADAPTERS_OUTPUT = '.fastq.gz' if (TRIM_FP or TRIM_TP) else '.skipped'
 ## Set whether using FASTQ or BAM input
-if (FASTQ_1 == ['']):
+if (FASTQ_1 == [''] * len(SAMID)):
     BAM_INPUT = True
 else:
     BAM_INPUT = False
