@@ -105,7 +105,7 @@ rule collect_insert_size:
     log:
         'log/{sample}_collect_insert_size.log'
     conda:
-        SOURCEDIR+"/../envs/picard.yaml"
+        SOURCEDIR+"/../envs/filter_bam.yaml"
     params:
         predir=PREDIR
     shell:

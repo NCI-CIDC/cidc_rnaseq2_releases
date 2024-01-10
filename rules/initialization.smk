@@ -150,8 +150,8 @@ rule retrieve_conservation_bw:
 ## Retrieve hg38 RefSeq genes bed and hg38 housekeeping genes bed for the RSeQC module
 rule retrieve_rseqc_beds:
     output:
-       bed=paths.rseqc.refseq_bed,
-       housekeeping_bed=paths.rseqc.housekeeping_bed
+       bed=paths.annot.refseq_bed,
+       housekeeping_bed=paths.annot.housekeeping_bed
     benchmark:
        'benchmark/retrieve_rseqc_beds.tab'
     log:

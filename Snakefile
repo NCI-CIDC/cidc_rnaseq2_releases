@@ -158,7 +158,7 @@ _logging.basicConfig(level=_logging.INFO,
 OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
           expand(paths.rseqc.bamqc_txt, sample=SAMID),
           expand(paths.rseqc.bamgc_txt, sample=SAMID),
-          expand(paths.fastqc.targz, sample=SAMID)]
+          expand(paths.fastqc.targz, sample=SAMID),
           expand(paths.rseqc.rd_txt, sample=SAMID),
           expand(paths.rseqc.gbc_png, sample=SAMID),
           expand(paths.rseqc.js_plot, sample=SAMID),

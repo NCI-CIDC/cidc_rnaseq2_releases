@@ -230,7 +230,7 @@ rule align_bam_stats:
    log:
        'log/{sample}_align_bam_stats.log'
    conda:
-       SOURCEDIR+"/../envs/qc.yaml"
+       SOURCEDIR+"/../envs/samtools.yaml"
    shell:
        '''
          echo "samtools stats {input.bam} | grep ^SN | cut -f 2- > {output}" | tee {log}
@@ -246,13 +246,13 @@ rule downsample_bam:
     output:
         seq=paths.bam.size,
         bam=paths.bam.downsampled_bam,
-        bai=paths.qc.downsampled_bai
+        bai=paths.bam.downsampled_bai
     benchmark:
         'benchmark/{sample}_downsample_bam.tab'
     log:
         'log/{sample}_downsample_bam.log'
     conda:
-        SOURCEDIR+"/../envs/qc.yaml"
+        SOURCEDIR+"/../envs/samtools.yaml"
     params:
         srcdir=SOURCEDIR
     threads: max(1,min(8,NCORES))
@@ -277,7 +277,7 @@ rule housekeeping_bam:
     log:
         'log/{sample}_housekeeping_bam.log'
     conda:
-        SOURCEDIR+"/../envs/qc.yaml"
+        SOURCEDIR+"/../envs/filter_bam.yaml"
     shell:
         '''
           echo "bedtools intersect -a {input.bam} -b {input.bed} > {output.bam} && samtools index {output.bam} > {output.bai}" | tee {log}
