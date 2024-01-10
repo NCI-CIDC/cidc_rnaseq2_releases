@@ -69,7 +69,7 @@ output = str(args.output).split(',')
 ## Get files to pull
 if ENDS == ['1']:
     in_file = [FASTQ_1[i[0]] for i in enumerate(SAMID) if SAMID[i[0]] == sample]
-elif ENDS != ['1'] and BAM != ['']:
+elif ENDS != ['1'] and BAM != [''] * len(SAMID):
     in_file = [BAM[i[0]] for i in enumerate(SAMID) if SAMID[i[0]] == sample]
 else:
     in_file_1 = [FASTQ_1[i[0]] for i in enumerate(SAMID) if SAMID[i[0]] == sample][0]
