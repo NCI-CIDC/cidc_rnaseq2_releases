@@ -16,8 +16,6 @@ echo $downsampling_size > $2
 VALUE=$(echo $downsampling_size | sed -r 's/M//g')
 FACTOR=$(samtools idxstats $3 | cut -f3 | awk -v COUNT=$((VALUE*1000000)) 'BEGIN {total=0} {total += $1} END {print COUNT/total}')
 
-echo "$VALUE"
-echo "$FACTOR"
 if [[ $FACTOR > 1 ]]
 then
    echo '[ERROR]: Requested number of reads exceeds total read count in' $3 '-- exiting' && exit 1
@@ -27,4 +25,4 @@ fi
 samtools view -@ $6 -s $FACTOR -b $3 | samtools sort -@ $6 -o $4
 
 ## Create index for the downsampled bam
-samtools index $4 > $5
+samtools index -@ $6 $4 > $5
