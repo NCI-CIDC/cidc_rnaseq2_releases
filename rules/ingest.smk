@@ -57,8 +57,10 @@ rule bam2fastq:
     threads: max(1,min(8,NCORES))
     shell:
         '''
+          echo "samtools collate -@ {threads} -u -O {input.bam} | \
+          samtools fastq -@ {threads} -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null -n" | tee {log}
           samtools collate -@ {threads} -u -O {input.bam} | \
-          samtools fastq -@ {threads} -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null -n
+          samtools fastq -@ {threads} -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null -n 2>> {log}
         '''
 
 ### Optionally trim adapters with cutadapt
