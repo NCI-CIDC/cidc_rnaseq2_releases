@@ -1,27 +1,53 @@
-## Map reads to the reference genome using BWA and output sorted bam
-rule run_bwa:
+# ## Map reads to the reference genome using BWA and output sorted bam
+# rule run_bwa:
+#     input:
+#         tch=rules.build_bwa_index.output,
+#         fa=rules.qualityfilter.output
+#     output:
+#         paths.bam.bam
+#     benchmark:
+#         'benchmark/{sample}_run_bwa.tab'
+#     log:
+#         'log/{sample}_run_bwa.log'
+#     conda:
+#         SOURCEDIR+"/../envs/bwa.yaml"
+#     params:
+#         sample='{sample}',
+#         indexseq=paths.genome.fa,
+#         in_fa_str=expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[0] + ' ' + expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[2] if len(ENDS) == 2 else expand(paths.rqual_filter.qfilter_fastq_single, read=ENDS)[0]
+#     priority: 4
+#     threads: max(1,min(8,NCORES))
+#     shell:
+#         '''
+#           echo "bwa mem -t {threads} {params.indexseq} {params.in_fa_str} | samtools view -@ {threads} -Sbh | samtools sort -@ {threads} > {output}" | tee {log}
+#           bwa mem -t {threads} {params.indexseq} {params.in_fa_str} | samtools view -@ {threads} -Sbh | samtools sort -@ {threads} > {output} 2>> {log}
+#         '''
+
+## Map reads to the reference genome using hisat2 and output sorted bam
+rule run_hisat2:
     input:
-        tch=rules.build_bwa_index.output,
+        tch=rules.build_hisat2_index.output,
         fa=rules.qualityfilter.output
     output:
         paths.bam.bam
     benchmark:
-        'benchmark/{sample}_run_bwa.tab'
+        'benchmark/{sample}_run_hisat2.tab'
     log:
-        'log/{sample}_run_bwa.log'
+        'log/{sample}_run_hisat2.log'
     conda:
-        SOURCEDIR+"/../envs/bwa.yaml"
+        SOURCEDIR+"/../envs/hisat2.yaml"
     params:
         sample='{sample}',
         indexseq=paths.genome.fa,
-        in_fa_str=expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[0] + ' ' + expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[2] if len(ENDS) == 2 else expand(paths.rqual_filter.qfilter_fastq_single, read=ENDS)[0]
+        in_fa_str='-1 ' + expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[0] + ' -2 ' + expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[2] if len(ENDS) == 2 else '-U 'expand(paths.rqual_filter.qfilter_fastq_single, read=ENDS)[0]
     priority: 4
     threads: max(1,min(8,NCORES))
     shell:
         '''
-          echo "bwa mem -t {threads} {params.indexseq} {params.in_fa_str} | samtools view -@ {threads} -Sbh | samtools sort -@ {threads} > {output}" | tee {log}
-          bwa mem -t {threads} {params.indexseq} {params.in_fa_str} | samtools view -@ {threads} -Sbh | samtools sort -@ {threads} > {output} 2>> {log}
+          echo "hisat2 -p {threads} -x genome/hisat2_genome_index {params.in_fa_str} --known-splicesite-infile genome/splicesites.txt -S {output}" | tee {log}
+          hisat2 -p {threads} -x genome/hisat2_genome_index {params.in_fa_str} --known-splicesite-infile genome/splicesites.txt -S {output} 2>> {log}
         '''
+
 
 ## Index BAM
 rule index_bam:

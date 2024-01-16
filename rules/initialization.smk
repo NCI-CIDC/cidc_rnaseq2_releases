@@ -37,28 +37,28 @@ rule retrieve_reference_genome:
           gsutil cp {params.gtf_uri} {output.gtf}
         '''
 
-## Download built bwa_index files for the specified genome
-## If using different genome, need to edit rule to build using 'bwa index'
-rule build_bwa_index:
+## Download built hisat2_index files for the specified genome
+## If using different genome, need to edit rule to build hisat2 index
+rule build_hisat2_index:
     input:
         rules.directory_setup.output,
         rules.retrieve_reference_genome.output.fa
     output:
-        'progress/bwa_index_built.done'
+        'progress/hisat2_index_built.done'
     benchmark:
-        'benchmark/build_bwa_index.tab'
+        'benchmark/build_hisat2_index.tab'
     log:
-        'log/build_bwa_index.log'
+        'log/build_hisat2_index.log'
     conda:
-        SOURCEDIR+"/../envs/bwa.yaml"
+        SOURCEDIR+"/../envs/hisat2.yaml"
     params:
-        bwa_uri=GENOME_BWA_URI
+        hisat2_uri=GENOME_HISAT2_URI
     priority: 1000
     threads: 1
     shell:
         '''
           echo "Downloading bwa_index files from ncbi ftp associated with genome for mapping reads to GRCh38 or hg38..." | tee {log}
-          gsutil cp {params.bwa_uri}/* genome
+          gsutil cp {params.hisat2_uri}/* genome
           touch {output} 
           
           ## export rule env details
