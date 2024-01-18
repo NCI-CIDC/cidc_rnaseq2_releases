@@ -1,4 +1,4 @@
-_microbiome_threads = 60
+_microbiome_threads = max(1,min(8,NCORES))
 
 rule contamination_centrifuge_index:
     output:
@@ -10,7 +10,7 @@ rule contamination_centrifuge_index:
        "Building Centrifuge Index"
     benchmark:
        to_benchmark(paths.centrifuge.tar)
-    threads: _microbiome_threads
+    threads: 1
     conda: "../envs/contamination.yaml"
     params:
        dest = Path(paths.centrifuge.tar).parent,
