@@ -1,32 +1,48 @@
-## Map reads to the reference genome using BWA and output sorted bam
-rule run_bwa:
+## Map reads to the reference genome using STAR and output sorted bam
+rule run_star:
     input:
-        tch=rules.build_bwa_index.output,
+        tch=rules.build_star_index.output,
         fa=rules.qualityfilter.output
     output:
         paths.bam.bam
     benchmark:
-        'benchmark/{sample}_run_bwa.tab'
+        'benchmark/{sample}_run_star.tab'
     log:
-        'log/{sample}_run_bwa.log'
+        'log/{sample}_run_star.log'
     conda:
-        SOURCEDIR+"/../envs/bwa.yaml"
+        SOURCEDIR+"/../envs/star.yaml"
     params:
         sample='{sample}',
-        indexseq=paths.genome.fa,
         in_fa_str=expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[0] + ' ' + expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[2] if len(ENDS) == 2 else expand(paths.rqual_filter.qfilter_fastq_single, read=ENDS)[0]
     priority: 4
     threads: max(1,min(8,NCORES))
     shell:
         '''
-          echo "bwa mem -t {threads} {params.indexseq} {params.in_fa_str} | samtools view -@ {threads} -Sbh | samtools sort -@ {threads} > {output}" | tee {log}
-          bwa mem -t {threads} {params.indexseq} {params.in_fa_str} | samtools view -@ {threads} -Sbh | samtools sort -@ {threads} > {output} 2>> {log}
+          echo "STAR --genomeDir genome/star_index \
+          --runThreadN {threads} \
+          --readFilesIn {params.in_fa_str} \
+          --readFilesCommand zcat \
+          --outSAMtype BAM SortedByCoordinate \
+          --outSAMunmapped Within \
+          --outSAMattributes Standard \
+          --outFileNamePrefix bam/{params.sample} \
+          --outStd BAM_SortedByCoordinate > {output}" | tee {log}
+          
+          STAR --genomeDir genome/star_index \
+          --runThreadN {threads} \
+          --readFilesIn {params.in_fa_str} \
+          --readFilesCommand zcat \
+          --outSAMtype BAM SortedByCoordinate \
+          --outSAMunmapped Within \
+          --outSAMattributes Standard \
+          --outFileNamePrefix bam/{params.sample} \
+          --outStd BAM_SortedByCoordinate > {output} 2>> {log}
         '''
 
 ## Index BAM
 rule index_bam:
     input:
-        bam=rules.run_bwa.output
+        bam=rules.run_star.output
     output:
         paths.bam.index
     benchmark:
@@ -48,7 +64,7 @@ rule index_bam:
 ## Perform post-alignment filtering on the sorted bam
 rule filter_bam:
     input:
-        bam=rules.run_bwa.output,
+        bam=rules.run_star.output,
         bai=rules.index_bam.output,
         blacklist=rules.retrieve_hg38_blacklist.output,
         bed=rules.create_bed.output
@@ -74,13 +90,13 @@ rule filter_bam:
           picard MarkDuplicates I={input.bam} O={output.dup_bam} M={output.metrics}
 
           ## Index the bam with duplicates marked
-          samtools index {output.dup_bam}
+          samtools index -@ {threads} {output.dup_bam}
 
           ## Remove reads that are unmapped, mate unmapped (for paired-end), not primary alignment,
           ## fail platform/vendor quality checks, and PCR or optical duplicates. Additionally, 
           ## the reads with a MAPQ of less than 30  and reads aligned to chrM, 
           ## chrUN, _random, chrEBV are filtered.
-          samtools view -b -F 1804 -q 30 -L {input.bed} {output.dup_bam} -o {output.flags_bam}
+          samtools view -@ {threads} -b -F 1804 -q 30 -L {input.bed} {output.dup_bam} -o {output.flags_bam}
 
           ## Remove alignments that are located in the hg38 blacklist
           bedtools intersect -v -abam {output.flags_bam} -b {input.blacklist} > {output.blacklist_bam}
@@ -88,10 +104,10 @@ rule filter_bam:
           ## Use samtools fixmate to update the flags for the reads whose mate got filtered
           ## and are no longer properly paired. Fixmate requires the bam to be sorted
           ## by query name first.
-          samtools sort -n {output.blacklist_bam} -o - | samtools fixmate - {output.fixmate_bam}
+          samtools sort -@ {threads} -n {output.blacklist_bam} -o - | samtools fixmate - {output.fixmate_bam}
           
           ## Filter the bam for reads that are properly paired and sort the bam by its coordinates
-          samtools view -b -f 2 {output.fixmate_bam} | samtools sort -o {output.filtered_bam} -
+          samtools view -@ {threads} -b -f 2 {output.fixmate_bam} | samtools sort -o {output.filtered_bam} -
 
           ## Index the final filtered bam
           samtools index -@ {threads} {output.filtered_bam} -o {output.index}
@@ -115,7 +131,7 @@ rule sample_bam:
     priority: 5
     shell:
         '''
-          count=$(samtools view -c {input.adj_bam})
+          count=$(samtools view -@ {threads} -c {input.adj_bam})
           frac=$(echo "4000000/$count" | bc -l)     
           
           ## If the read count of the bam is less than or equal to 4 million,
@@ -125,7 +141,7 @@ rule sample_bam:
               cp {input.adj_bam} {output.sampled_bam}
           else
               ## Seed is arbitrarily set to 27 for consistency
-              samtools view -b -s 27$frac {input.adj_bam} > {output.sampled_bam}
+              samtools view -@ {threads} -b -s 27$frac {input.adj_bam} > {output.sampled_bam}
           fi
           ## Index the sampled bam
           samtools index -@ {threads} {output.sampled_bam} -o {output.index}
@@ -221,7 +237,7 @@ rule bam_gc:
 ## Generate stats for the aligned bam (RSeQC module)
 rule align_bam_stats:
    input:
-       bam=rules.run_bwa.output,
+       bam=rules.run_star.output,
        idx=rules.index_bam.output
    output:
        paths.bam.stats
@@ -231,17 +247,18 @@ rule align_bam_stats:
        'log/{sample}_align_bam_stats.log'
    conda:
        SOURCEDIR+"/../envs/samtools.yaml"
+   threads: max(1,min(8,NCORES))
    shell:
        '''
-         echo "samtools stats {input.bam} | grep ^SN | cut -f 2- > {output}" | tee {log}
-         samtools stats {input.bam} | grep ^SN | cut -f 2- > {output} 2>> {log}
+         echo "samtools stats -@ {threads} {input.bam} | grep ^SN | cut -f 2- > {output}" | tee {log}
+         samtools stats -@ {threads} {input.bam} | grep ^SN | cut -f 2- > {output} 2>> {log}
        '''
 
 ## Subsample the aligned bam for use in the RSeQC module; the output bam is sorted
 rule downsample_bam:
     input:
         stats=rules.align_bam_stats.output,
-        bam=rules.run_bwa.output,
+        bam=rules.run_star.output,
         idx=rules.index_bam.output
     output:
         seq=paths.bam.size,
