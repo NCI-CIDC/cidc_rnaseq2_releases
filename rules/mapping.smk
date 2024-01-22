@@ -4,7 +4,9 @@ rule run_star:
         tch=rules.build_star_index.output,
         fa=rules.qualityfilter.output
     output:
-        paths.bam.bam
+        bam=paths.bam.bam,
+        bam_transcriptome=paths.bam.bam_transcriptome,
+        chim_junc=paths.bam.chimeric_junction
     benchmark:
         'benchmark/{sample}_run_star.tab'
     log:
@@ -18,25 +20,27 @@ rule run_star:
     threads: max(1,min(8,NCORES))
     shell:
         '''
-          echo "STAR --genomeDir genome/star_index \
-          --runThreadN {threads} \
-          --readFilesIn {params.in_fa_str} \
-          --readFilesCommand zcat \
-          --outSAMtype BAM SortedByCoordinate \
-          --outSAMunmapped Within \
-          --outSAMattributes Standard \
-          --outFileNamePrefix bam/{params.sample} \
-          --outStd BAM_SortedByCoordinate > {output}" | tee {log}
+          echo "STAR --runThreadN {threads} --genomeDir genome/star_index \
+          --readFilesIn {params.in_fa_str} --readFilesCommand zcat \
+          --outSAMstrandField intronMotif --outSAMunmapped Within --outSAMtype BAM SortedByCoordinate \
+          --outReadsUnmapped None --chimSegmentMin 12 --chimJunctionOverhangMin 12 --chimOutJunctionFormat 1 \
+          --alignSJDBoverhangMin 10 --alignMatesGapMax 1000000 --alignIntronMax 1000000 --alignSJstitchMismatchNmax 5 -1 5 5 \
+          --chimMultimapScoreRange 10 --chimMultimapNmax 10 --chimNonchimScoreDropMin 10 \
+          --peOverlapNbasesMin 12 --peOverlapMMp 0.1 \
+          --twopassMode Basic --quantMode TranscriptomeSAM GeneCounts \
+          --outFileNamePrefix bam/{params.sample}. \
+          --outStd BAM_SortedByCoordinate > {output.bam}" | tee {log}
           
-          STAR --genomeDir genome/star_index \
-          --runThreadN {threads} \
-          --readFilesIn {params.in_fa_str} \
-          --readFilesCommand zcat \
-          --outSAMtype BAM SortedByCoordinate \
-          --outSAMunmapped Within \
-          --outSAMattributes Standard \
-          --outFileNamePrefix bam/{params.sample} \
-          --outStd BAM_SortedByCoordinate > {output} 2>> {log}
+          STAR --runThreadN {threads} --genomeDir genome/star_index \
+          --readFilesIn {params.in_fa_str} --readFilesCommand zcat \
+          --outSAMstrandField intronMotif --outSAMunmapped Within --outSAMtype BAM SortedByCoordinate \
+          --outReadsUnmapped None --chimSegmentMin 12 --chimJunctionOverhangMin 12 --chimOutJunctionFormat 1 \
+          --alignSJDBoverhangMin 10 --alignMatesGapMax 1000000 --alignIntronMax 1000000 --alignSJstitchMismatchNmax 5 -1 5 5 \
+          --chimMultimapScoreRange 10 --chimMultimapNmax 10 --chimNonchimScoreDropMin 10 \
+          --peOverlapNbasesMin 12 --peOverlapMMp 0.1 \
+          --twopassMode Basic --quantMode TranscriptomeSAM GeneCounts \
+          --outFileNamePrefix bam/{params.sample}. \
+          --outStd BAM_SortedByCoordinate > {output.bam} 2>> {log}
         '''
 
 ## Index BAM
