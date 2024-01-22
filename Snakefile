@@ -80,7 +80,7 @@ sample_metadata_df = pd.read_table(config["sample_metadata"], sep=",", keep_defa
 # Reference genome gcloud URI locations
 GENOME_FA_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_fa", "google_bucket_URI"].item()
 GENOME_GTF_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_gtf", "google_bucket_URI"].item()
-GENOME_BWA_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_bwa_index", "google_bucket_URI"].item()
+GENOME_STAR_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_star_index", "google_bucket_URI"].item()
 GENOME_BLACKLIST_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_blacklist", "google_bucket_URI"].item()
 GENOME_DHS_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_dhs", "google_bucket_URI"].item()
 GENOME_CONSERVATION_URI = reference_df.loc[reference_df["ref_file_name"]=="conservation", "google_bucket_URI"].item()
@@ -115,7 +115,7 @@ NCORES  = int(config["ncores"])
 SUBDIRS  = 'benchmark log info progress genome annot input analysis analysis/data analysis/report'
 
 ## Set single or paired end
-if (FASTQ_2 != [''] or BAM != ['']):
+if (FASTQ_2[0] != '' or BAM[0] != ''):
     ENDS  = ['1','2']
 else:
     ENDS  = ['1']
@@ -146,7 +146,7 @@ DOARCHIVE = len(ARCHIVE) != 0
 # Set up logging to log file
 LOG_FILE  = config["log_file"]
 _logging.basicConfig(level=_logging.INFO,
-                    format='[pipeline_template] %(asctime)s - %(levelname)s - %(message)s',
+                    format='[cidc_rnaseq] %(asctime)s - %(levelname)s - %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p',
                     handlers=[_logging.FileHandler(LOG_FILE)])
 

@@ -1,7 +1,6 @@
-name: bwa
+name: star
 channels:
     - conda-forge
     - bioconda
 dependencies:
-    - bwa==0.7.17
-    - samtools==1.18
+    - star==2.7.11a

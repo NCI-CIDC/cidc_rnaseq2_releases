@@ -1,12 +1,11 @@
 ## INITIALIZE
 genome:
-    fa: "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna"
-    bwt: "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.bwt"
+    fa: "GCA_000001405.15_GRCh38_full_analysis_set.fna"
     size: "genome.size"
-    fai: "GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.fai"
+    fai: "GCA_000001405.15_GRCh38_full_analysis_set.fna.fai"
     blacklist: "hg38-blacklist.v2.bed"
-    filtered_fai: "GCA_000001405.15_GRCh38_no_alt_analysis_set_filtered.fna.fai"
-    bed: "GCA_000001405.15_GRCh38_no_alt_analysis_set_filtered.bed"
+    filtered_fai: "GCA_000001405.15_GRCh38_full_analysis_set_filtered.fna.fai"
+    bed: "GCA_000001405.15_GRCh38_full_analysis_set_filtered.bed"
     dhs: "DHS_hg38.bed"
 
 annot:
