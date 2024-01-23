@@ -8,3 +8,4 @@ conservation,gs://cidc-atac-reference-v1/hg38.phastCons100way.bw,http://hgdownlo
 centrifuge,gs://cidc-atac-reference-v1/p_compressed+h+v.tar.gz,https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed%2Bh%2Bv.tar.gz
 rseqc_bed,gs://cidc-rna-reference-v1/hg38_RefSeq.bed.gz,https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38_RefSeq.bed.gz/download
 rseqc_housekeeping_bed,gs://cidc-rna-reference-v1/hg38.HouseKeepingGenes.bed.gz,https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38.HouseKeepingGenes.bed.gz/download
+fusion_lib,gs://cidc-rna-reference-v1/GRCh38_gencode_v22_CTAT_lib_Mar012021.STAR_v2.7.11a.plug-n-play.tar.gz,https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh37_gencode_v19_CTAT_lib_Mar012021.STAR_v2.7.11a.plug-n-play.tar.gz

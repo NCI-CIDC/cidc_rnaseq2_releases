@@ -167,3 +167,20 @@ rule retrieve_rseqc_beds:
        echo "gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz" | tee -a {log}
        gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz 2>> {log}
        '''
+
+## Retrieve Trinity Cancer Transcriptome Analysis Toolkit (CTAT) human hg38 library for STAR-Fusion 
+rule retrieve_ctat_library:
+    output:
+        lib=paths.annot.lib
+    benchmark:
+        'benchmark/retrieve_ctat_library.tab'
+    log:
+        'log/retrieve_ctat_library.log'
+    params:
+        lib=FUSION_LIB_URI
+    shell:
+        '''
+          echo "gsutil cp {params.lib} {output.lib}.tar.gz && tar -zxvf {output.lib}.tar.gz" | tee {log}
+          gsutil cp {params.lib} {output.lib}.tar.gz && tar -zxvf {output.lib}.tar.gz 2>> {log}
+        '''
+

@@ -87,6 +87,7 @@ GENOME_CONSERVATION_URI = reference_df.loc[reference_df["ref_file_name"]=="conse
 CFUG_REF = reference_df.loc[reference_df["ref_file_name"]=="centrifuge", "google_bucket_URI"].item()
 RSEQC_BED_URI = reference_df.loc[reference_df["ref_file_name"]=="rseqc_bed", "google_bucket_URI"].item()
 RSEQC_HOUSEKEEPING_BED_URI =  reference_df.loc[reference_df["ref_file_name"]=="rseqc_housekeeping_bed", "google_bucket_URI"].item()
+FUSION_LIB_URI = reference_df.loc[reference_df["ref_file_name"]=="fusion_lib", "google_bucket_URI"].item()
 
 # Sample info
 ## List of samples to process
@@ -162,7 +163,9 @@ OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
           expand(paths.rseqc.rd_txt, sample=SAMID),
           expand(paths.rseqc.gbc_png, sample=SAMID),
           expand(paths.rseqc.js_plot, sample=SAMID),
-          expand(paths.rseqc.is_pdf, sample=SAMID)]
+          expand(paths.rseqc.is_pdf, sample=SAMID),
+          expand(paths.fusion.tsv, sample=SAMID),
+          expand(paths.fusion.tsv_abridged, sample=SAMID)]
 
 if RSEQC == "housekeeping":
     OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))
@@ -211,3 +214,4 @@ include: "./rules/ingest.smk"
 include: "./rules/contamination.smk"
 include: "./rules/mapping.smk"
 include: "./rules/rseqc.smk"
+include: "./rules/fusion.smk"
