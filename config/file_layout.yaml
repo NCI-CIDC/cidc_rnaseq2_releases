@@ -37,6 +37,8 @@ centrifuge:
 bam:
     bam: "{sample}.bam"
     index: "{sample}.bam.bai"
+    bam_transcriptome: "{sample}.Aligned.toTranscriptome.out.bam"
+    chimeric_junction: "{sample}.Chimeric.out.junction"
     dup_bam: "{sample}_dup.bam"
     flags_bam: "{sample}_flags.bam"
     blacklist_bam: "{sample}_blacklist.bam"
