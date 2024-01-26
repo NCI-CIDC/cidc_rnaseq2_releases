@@ -46,7 +46,7 @@ rule run_star:
 ## Index BAM
 rule index_bam:
     input:
-        bam=rules.run_star.output
+        bam=paths.bam.bam
     output:
         paths.bam.index
     benchmark:
@@ -68,8 +68,8 @@ rule index_bam:
 ## Perform post-alignment filtering on the sorted bam
 rule filter_bam:
     input:
-        bam=rules.run_star.output,
-        bai=rules.index_bam.output,
+        bam=paths.bam.bam,
+        bai=paths.bam.index,
         blacklist=rules.retrieve_hg38_blacklist.output,
         bed=rules.create_bed.output
     output:
