@@ -73,3 +73,14 @@ rseqc:
 fastqc:
     targz: "{sample}_filtered_fastqc.tar.gz"
 
+immune_response:
+    msisensor2_models: "models_hg38"
+    msisensor2: "msisensor2/{sample}_msisensor2",
+    msisensor2_txt: "msisensor2/{sample}_msisensor2.txt",
+    msisensor2_dis: "msisensor2/{sample}_msisensor2_dis",
+    msisensor2_somatic: "msisensor2/{sample}_msisensor2_somatic"
+        
+immune_repertoire:
+    bcrtcr: "hg38_bcrtcr.fa"
+    trust4: "trust4/{sample}_cdr3.out"
+    cdr3: "trust4/{sample}_cdr3.out.processed.txt"
