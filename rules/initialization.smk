@@ -37,32 +37,32 @@ rule retrieve_reference_genome:
           gsutil cp {params.gtf_uri} {output.gtf}
         '''
 
-## Download built bwa_index files for the specified genome
-## If using different genome, need to edit rule to build using 'bwa index'
-rule build_bwa_index:
+## Download built star_index files for the specified genome
+## If using different genome, need to edit rule to call building index using STAR
+rule build_star_index:
     input:
         rules.directory_setup.output,
         rules.retrieve_reference_genome.output.fa
     output:
-        'progress/bwa_index_built.done'
+        'progress/star_index_built.done'
     benchmark:
-        'benchmark/build_bwa_index.tab'
+        'benchmark/build_star_index.tab'
     log:
-        'log/build_bwa_index.log'
+        'log/build_star_index.log'
     conda:
-        SOURCEDIR+"/../envs/bwa.yaml"
+        SOURCEDIR+"/../envs/star.yaml"
     params:
-        bwa_uri=GENOME_BWA_URI
+        star_uri=GENOME_STAR_URI
     priority: 1000
     threads: 1
     shell:
         '''
-          echo "Downloading bwa_index files from ncbi ftp associated with genome for mapping reads to GRCh38 or hg38..." | tee {log}
-          gsutil cp {params.bwa_uri}/* genome
+          echo "Downloading star_index files for mapping reads to GRCh38 or hg38..." | tee {log}
+          gsutil -m cp -R {params.star_uri} genome
           touch {output} 
           
           ## export rule env details
-          conda env export --no-builds > info/bwa.info
+          conda env export --no-builds > info/star.info
         '''
 
 ## Get genome chrom sizes for bw generation
