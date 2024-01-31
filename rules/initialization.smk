@@ -167,3 +167,20 @@ rule retrieve_rseqc_beds:
        echo "gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz" | tee -a {log}
        gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz 2>> {log}
        '''
+
+## Retrieve immune reference datasets
+rule retrieve_immune_refs:
+    output:
+        response=paths.immune_response.msisensor2_models,
+        repertoire=paths.immune_repertoire.bcrtcr
+    benchmark:
+        'benchmark/retrieve_immune_refs.tab'
+    params:
+        response_uri=IMMUNE_RESPONSE_URI,
+        repertoire_uri=IMMUNE_REPERTOIRE_URI
+    threads: 1
+    shell:
+        '''
+        gsutil cp -r {params.response_uri} {output.response}
+        gsutil cp {params.repertoire_uri} {output.repertoire}
+        '''

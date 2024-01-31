@@ -1,0 +1,6 @@
+name: immune_repertoire
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - trust4==1.0.13
