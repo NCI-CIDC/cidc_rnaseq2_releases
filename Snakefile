@@ -171,9 +171,9 @@ OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
           expand(paths.rseqc.is_pdf, sample=SAMID),
           expand(paths.fusion.tsv, sample=SAMID),
           expand(paths.fusion.tsv_abridged, sample=SAMID),
-          expand(paths.fusion.tsv_sample, sample=SAMID),
-          expand(paths.immune_response.msisensor2_txt, sample=SAMID),
-          expand(paths.immune_repertoire.cdr3, sample=SAMID)]
+          expand(paths.fusion.tsv_sample, sample=SAMID)]
+         # expand(paths.immune_response.msisensor2_txt, sample=SAMID)]
+         # expand(paths.immune_repertoire.cdr3, sample=SAMID)]
 
 if RSEQC == "housekeeping":
     OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))
