@@ -1,6 +1,0 @@
-name: immune_response
-channels:
-    - conda-forge
-    - bioconda
-dependencies:
-    - msisensor==0.5
