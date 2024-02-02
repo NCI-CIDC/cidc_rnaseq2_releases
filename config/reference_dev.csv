@@ -9,3 +9,5 @@ centrifuge,gs://cidc-atac-reference-v1/p_compressed+h+v.tar.gz,https://genome-id
 rseqc_bed,gs://cidc-rna-reference-v1/hg38_RefSeq.bed.gz,https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38_RefSeq.bed.gz/download
 rseqc_housekeeping_bed,gs://cidc-rna-reference-v1/hg38.HouseKeepingGenes.bed.gz,https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38.HouseKeepingGenes.bed.gz/download
 fusion_lib,gs://cidc-rna-reference-v1/ctat_genome_lib_build_dir,gs://cidc-rna-reference-v1/ctat_genome_lib_build_dir/README.txt
+immune_response_ref,gs://cidc-rna-reference-v1/models_hg38,https://github.com/niu-lab/msisensor2/tree/master/models_hg38
+immune_repertoire_ref,gs://cidc-rna-reference-v1/hg38_bcrtcr.fa,https://github.com/liulab-dfci/TRUST4/blob/master/hg38_bcrtcr.fa
