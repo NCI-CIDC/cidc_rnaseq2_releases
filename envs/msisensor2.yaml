@@ -1,0 +1,6 @@
+name: msisensor2
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - msisensor2==0.1
