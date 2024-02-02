@@ -1,8 +1,8 @@
 ## Run msisensor
 rule msisensor2_tumor_call:
     input:
-        bam=rules.run_bwa.output,
-        bai=rules.sample_bam.output.index
+        bam=rules.run_star.output.bam,
+        bai=rules.index_bam.output
     output:
         msisensor="msisensor2/{sample}_msisensor2",
         msisensor_txt="msisensor2/{sample}_msisensor2.txt",
@@ -15,7 +15,7 @@ rule msisensor2_tumor_call:
     conda:
         SOURCEDIR+"/../envs/immune_response.yaml"
     params:
-        sample='{sample}'
+        sample='{sample}',
         prefix='msisensor2/{sample}_msisensor2',
         msisensor2_models= paths.immune_response.msisensor2_models
     shell:

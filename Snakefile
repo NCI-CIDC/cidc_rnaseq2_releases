@@ -87,6 +87,7 @@ GENOME_CONSERVATION_URI = reference_df.loc[reference_df["ref_file_name"]=="conse
 CFUG_REF = reference_df.loc[reference_df["ref_file_name"]=="centrifuge", "google_bucket_URI"].item()
 RSEQC_BED_URI = reference_df.loc[reference_df["ref_file_name"]=="rseqc_bed", "google_bucket_URI"].item()
 RSEQC_HOUSEKEEPING_BED_URI =  reference_df.loc[reference_df["ref_file_name"]=="rseqc_housekeeping_bed", "google_bucket_URI"].item()
+FUSION_LIB_URI = reference_df.loc[reference_df["ref_file_name"]=="fusion_lib", "google_bucket_URI"].item()
 IMMUNE_RESPONSE_URI = reference_df.loc[reference_df["ref_file_name"]=="immune_response_ref", "google_bucket_URI"].item()
 IMMUNE_REPERTOIRE_URI = reference_df.loc[reference_df["ref_file_name"]=="immune_repertoire_ref", "google_bucket_URI"].item()
 
@@ -135,6 +136,9 @@ else:
 ## Quality trimming option
 QUAL_CUTOFF = config["quality_trim"]
 
+## STAR aligner module thread option
+STAR = config["star"]
+
 ## RSeQC module option
 RSEQC = config["rseqc"]
 
@@ -164,9 +168,12 @@ OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
           expand(paths.rseqc.rd_txt, sample=SAMID),
           expand(paths.rseqc.gbc_png, sample=SAMID),
           expand(paths.rseqc.js_plot, sample=SAMID),
-          expand(paths.rseqc.is_pdf, sample=SAMID)],
-          expand(paths.immune_response.msisensor2_txt, sample=SAMID)],
-          expand(paths.immune_repertoire.cdr3, sample=SAMID)]
+          expand(paths.rseqc.is_pdf, sample=SAMID),
+          expand(paths.fusion.tsv, sample=SAMID),
+          expand(paths.fusion.tsv_abridged, sample=SAMID),
+          expand(paths.fusion.tsv_sample, sample=SAMID)]
+         # expand(paths.immune_response.msisensor2_txt, sample=SAMID)]
+         # expand(paths.immune_repertoire.cdr3, sample=SAMID)]
 
 if RSEQC == "housekeeping":
     OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))
@@ -215,6 +222,6 @@ include: "./rules/ingest.smk"
 include: "./rules/contamination.smk"
 include: "./rules/mapping.smk"
 include: "./rules/rseqc.smk"
+include: "./rules/fusion.smk"
 include: "./rules/immune_repertoire.smk"
 include: "./rules/immune_response.smk"
-include: "./rules/rseqc.smk"

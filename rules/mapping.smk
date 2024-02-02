@@ -17,7 +17,7 @@ rule run_star:
         sample='{sample}',
         in_fa_str=expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[0] + ' ' + expand(paths.rqual_filter.qfilter_fastq_paired, read=ENDS, paired=['P','U'])[2] if len(ENDS) == 2 else expand(paths.rqual_filter.qfilter_fastq_single, read=ENDS)[0]
     priority: 4
-    threads: max(1,min(8,NCORES))
+    threads: STAR
     shell:
         '''
           echo "STAR --runThreadN {threads} --genomeDir genome/star_index \
@@ -46,7 +46,7 @@ rule run_star:
 ## Index BAM
 rule index_bam:
     input:
-        bam=paths.bam.bam
+        bam=rules.run_star.output.bam
     output:
         paths.bam.index
     benchmark:
@@ -68,8 +68,8 @@ rule index_bam:
 ## Perform post-alignment filtering on the sorted bam
 rule filter_bam:
     input:
-        bam=paths.bam.bam,
-        bai=paths.bam.index,
+        bam=rules.run_star.output.bam,
+        bai=rules.index_bam.output,
         blacklist=rules.retrieve_hg38_blacklist.output,
         bed=rules.create_bed.output
     output:
@@ -241,7 +241,7 @@ rule bam_gc:
 ## Generate stats for the aligned bam (RSeQC module)
 rule align_bam_stats:
    input:
-       bam=rules.run_star.output,
+       bam=rules.run_star.output.bam,
        idx=rules.index_bam.output
    output:
        paths.bam.stats
@@ -262,7 +262,7 @@ rule align_bam_stats:
 rule downsample_bam:
     input:
         stats=rules.align_bam_stats.output,
-        bam=rules.run_star.output,
+        bam=rules.run_star.output.bam,
         idx=rules.index_bam.output
     output:
         seq=paths.bam.size,

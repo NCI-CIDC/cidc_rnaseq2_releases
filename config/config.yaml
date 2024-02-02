@@ -1,10 +1,10 @@
 ## workflow set up
 # working output dir
-predir: '/media/scratch/cherikhsr/rnaseq_test_output'
+predir: '/media/analysis/rnaseq_test_output'
 # source dir for supporting scripts
-srcdir: '/media/scratch/cherikhsr/cidc_rnaseq/source'
+srcdir: '/home/trivittge_nih_gov/cidc_rnaseq/source'
 # file to write running log
-log_file: '/media/scratch/cherikhsr/rnaseq_test_output/pipeline.log'
+log_file: '/media/analysis/rnaseq_test_output/pipeline.log'
 # number of CPU cores dedicated to entire workflow
 ncores: 16
 
@@ -23,6 +23,14 @@ sample_metadata: 'config/sample_metadata_dev.csv'
 
 ## preprocess options
 quality_trim: '20'
+
+
+## STAR aligner thread option. STAR requires ~30 GB of RAM. Therefore, the number of threads used should be dependent on the amount of memory for the machine type.
+## Refer to https://cloud.google.com/compute/docs/compute-optimized-machines to determine how much Memory (GB) for each machine type.
+## If the machine type is c2-standard-60 with 60 vCPUs and 240 Memory (GB), 7 samples can be run at the same time (7 samples * 30 GB = 210 GB). The run MUST use less than 240 GB, or it will crash. 
+## Therefore, the thread option should be set to 8 as a minimum (7 samples * 8 threads = 56 threads total). Subsequently, there would not be enough threads to start a new alignment run with 
+#  9 samples and go over the 240 GB memory limit. 
+star: 10
 
 
 ## RSEeQC module input option. Housekeeping bam will be used for qc rules when option is 'housekeeping'

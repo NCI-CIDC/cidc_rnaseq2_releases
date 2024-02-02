@@ -1,6 +1,6 @@
-name: star
+name: star_fusion
 channels:
     - conda-forge
     - bioconda
 dependencies:
-    - star==2.7.8a
+    - star-fusion==1.12.0
