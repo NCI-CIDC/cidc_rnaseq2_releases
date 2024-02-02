@@ -1,11 +1,11 @@
 ﻿ref_file_name,google_bucket_URI,original_URL
-genome_fa,gs://cidc-rna-reference-v1/GCA_000001405.15_GRCh38_full_analysis_set.fna,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_full_analysis_set.fna.gz
-genome_gtf,gs://cidc-rna-reference-v1/GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.gtf,ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.gtf.gz
-genome_star_index,gs://cidc-rna-reference-v1/star_index,
+genome_fa,gs://cidc-rna-reference-v1/GRCh38.primary_assembly.genome.fa.gz,https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/GRCh38.primary_assembly.genome.fa.gz
+genome_gtf,gs://cidc-rna-reference-v1/gencode.v37.annotation.gtf.gz,https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.annotation.gtf.gz
+genome_star_index,gs://cidc-rna-reference-v1/star_index,gs://cidc-rna-reference-v1/star_index/Log.out
 genome_blacklist,gs://cidc-atac-reference-v1/hg38-blacklist.v2.bed.gz,https://github.com/Boyle-Lab/Blacklist/raw/master/lists/hg38-blacklist.v2.bed.gz
 genome_dhs,gs://cidc-atac-reference-v1/DHS_hg38.bed,DFCI
 conservation,gs://cidc-atac-reference-v1/hg38.phastCons100way.bw,http://hgdownload.cse.ucsc.edu/goldenpath/hg38/phastCons100way/hg38.phastCons100way.bw
 centrifuge,gs://cidc-atac-reference-v1/p_compressed+h+v.tar.gz,https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed%2Bh%2Bv.tar.gz
 rseqc_bed,gs://cidc-rna-reference-v1/hg38_RefSeq.bed.gz,https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38_RefSeq.bed.gz/download
 rseqc_housekeeping_bed,gs://cidc-rna-reference-v1/hg38.HouseKeepingGenes.bed.gz,https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38.HouseKeepingGenes.bed.gz/download
-fusion_lib,gs://cidc-rna-reference-v1/GRCh38_gencode_v22_CTAT_lib_Mar012021.STAR_v2.7.11a.plug-n-play.tar.gz,https://data.broadinstitute.org/Trinity/CTAT_RESOURCE_LIB/GRCh37_gencode_v19_CTAT_lib_Mar012021.STAR_v2.7.11a.plug-n-play.tar.gz
+fusion_lib,gs://cidc-rna-reference-v1/ctat_genome_lib_build_dir,gs://cidc-rna-reference-v1/ctat_genome_lib_build_dir/README.txt

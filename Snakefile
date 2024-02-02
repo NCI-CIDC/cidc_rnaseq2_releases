@@ -134,6 +134,9 @@ else:
 ## Quality trimming option
 QUAL_CUTOFF = config["quality_trim"]
 
+## STAR aligner module thread option
+STAR = config["star"]
+
 ## RSeQC module option
 RSEQC = config["rseqc"]
 
@@ -165,7 +168,8 @@ OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
           expand(paths.rseqc.js_plot, sample=SAMID),
           expand(paths.rseqc.is_pdf, sample=SAMID),
           expand(paths.fusion.tsv, sample=SAMID),
-          expand(paths.fusion.tsv_abridged, sample=SAMID)]
+          expand(paths.fusion.tsv_abridged, sample=SAMID),
+          expand(paths.fusion.tsv_sample, sample=SAMID)]
 
 if RSEQC == "housekeeping":
     OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))

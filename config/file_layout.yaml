@@ -1,20 +1,20 @@
 ## INITIALIZE
 genome:
-    fa: "GCA_000001405.15_GRCh38_full_analysis_set.fna"
+    fa: "GRCh38.primary_assembly.genome.fa"
     size: "genome.size"
-    fai: "GCA_000001405.15_GRCh38_full_analysis_set.fna.fai"
+    fai: "GRCh38.primary_assembly.genome.fa.fai"
     blacklist: "hg38-blacklist.v2.bed"
-    filtered_fai: "GCA_000001405.15_GRCh38_full_analysis_set_filtered.fna.fai"
-    bed: "GCA_000001405.15_GRCh38_full_analysis_set_filtered.bed"
+    filtered_fai: "GRCh38.primary_assembly_filtered.genome.fa.fai"
+    bed: "GRCh38.primary_assembly_filtered.bed"
     dhs: "DHS_hg38.bed"
 
 annot:
-    gtf: "GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.gtf"
+    gtf: "gencode.v37.annotation.gtf.gz"
     bed: "GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.bed"
     bw: "hg38.phastCons100way.bw"
     refseq_bed: "hg38_RefSeq.bed"
     housekeeping_bed: "hg38.HouseKeepingGenes.bed"
-    lib: "GRCh38_gencode_v22_CTAT_lib_Mar012021.STAR_v2.7.11a.plug-n-play"
+    lib: "ctat_genome_lib_build_dir"
 
 ## INGEST
 input:
@@ -76,5 +76,6 @@ fastqc:
     targz: "{sample}_filtered_fastqc.tar.gz"
 
 fusion:
-    tsv: "{sample}_fusion_predictions.tsv"
-    tsv_abridged: "{sample}_fusion_predictions.abridged.tsv"
+    tsv: "{sample}/{sample}.fusion_predictions.tsv"
+    tsv_abridged: "{sample}/{sample}.fusion_predictions.abridged.tsv"
+    tsv_sample: "{sample}/{sample}.fusion_predictions.abridged_addSample.tsv"

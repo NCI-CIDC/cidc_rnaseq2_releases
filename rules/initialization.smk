@@ -30,11 +30,11 @@ rule retrieve_reference_genome:
     threads: 1
     shell:
         '''
-          echo "downloading Genome to map reads to GRCh38 or hg38..." | tee {log}
-          gsutil cp {params.fa_uri} {output.fa}
+          echo "downloading genome to map reads to GRCh38 or hg38..." | tee {log}
+          gsutil cp {params.fa_uri} {output.fa}.gz && gunzip {output.fa}.gz
           
           echo "downloading supporting GTF annotations..." | tee -a {log}
-          gsutil cp {params.gtf_uri} {output.gtf}
+          gsutil cp {params.gtf_uri} {output.gtf}.gz && gunzip {output.gtf}.gz
         '''
 
 ## Download built star_index files for the specified genome
@@ -171,16 +171,18 @@ rule retrieve_rseqc_beds:
 ## Retrieve Trinity Cancer Transcriptome Analysis Toolkit (CTAT) human hg38 library for STAR-Fusion 
 rule retrieve_ctat_library:
     output:
-        lib=paths.annot.lib
+        lib=directory(paths.annot.lib),
+        tch='progress/ctat_lib_downloaded.done'
     benchmark:
         'benchmark/retrieve_ctat_library.tab'
     log:
         'log/retrieve_ctat_library.log'
     params:
-        lib=FUSION_LIB_URI
+        lib=FUSION_LIB_URI,
+        predir=PREDIR
     shell:
         '''
-          echo "gsutil cp {params.lib} {output.lib}.tar.gz && tar -zxvf {output.lib}.tar.gz" | tee {log}
-          gsutil cp {params.lib} {output.lib}.tar.gz && tar -zxvf {output.lib}.tar.gz 2>> {log}
+          echo "gsutil -m cp -R {params.lib} annot && touch {output.tch}" | tee {log}
+          gsutil -m cp -R {params.lib} annot && touch {output.tch} 2>> {log}
         '''
 
