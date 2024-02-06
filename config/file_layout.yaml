@@ -80,14 +80,15 @@ fusion:
     tsv_abridged: "{sample}/{sample}.fusion_predictions.abridged.tsv"
     tsv_sample: "{sample}/{sample}.fusion_predictions.abridged_addSample.tsv"
 
-immune_response:
-    msisensor2_models: "models_hg38"
-    msisensor2: "msisensor2/{sample}_msisensor2"
-    msisensor2_txt: "msisensor2/{sample}_msisensor2.txt"
-    msisensor2_dis: "msisensor2/{sample}_msisensor2_dis"
-    msisensor2_somatic: "msisensor2/{sample}_msisensor2_somatic"
+msisensor2:
+    models: "models_hg38"
+    output: "{sample}_msisensor2"
+    txt: "{sample}_msisensor2.txt"
+    dis: "{sample}_msisensor2_dis"
+    somatic: "{sample}_msisensor2_somatic"
         
-immune_repertoire:
+trust4:
     bcrtcr: "hg38_bcrtcr.fa"
-    trust4: "trust4/{sample}_cdr3.out"
-    cdr3: "trust4/{sample}_cdr3.out.processed.txt"
+    imgt: "human_IMGT+C.fa"
+    cdr3: "{sample}/{sample}_cdr3.out"
+    txt: "{sample}/{sample}_cdr3.out.processed.txt"

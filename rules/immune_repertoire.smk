@@ -1,42 +1,54 @@
-rule trust4_repertoire:
+## Run TRUST4 to provide an overview of the immune repertoire of tumors including CDR3 sequence length and the frequency of various V genes, J genes, and VJ pairs for different chains in the TCR and BCR
+rule trust4:
     input:
         bam=rules.run_star.output.bam,
-        bai=rules.index_bam.output
+        bai=rules.index_bam.output,
+        bcrtcr=rules.retrieve_immune_refs.output.bcrtcr,
+        imgt=rules.retrieve_immune_refs.output.imgt
     output:
-        'trust4/{sample}_cdr3.out'
+        cdr3=paths.trust4.cdr3
     benchmark:
-        'benchmark/{sample}_trust4_immune_repertoire.tab'
+        'benchmark/{sample}_trust4.tab'
     log:
-        'log/{sample}.trust4_immune_repertoire.log'
+        'log/{sample}_trust4.log'
     conda:
-        SOURCEDIR+"/../envs/immune_repertoire.yaml"
+        SOURCEDIR+"/../envs/trust4.yaml"
     params:
-        sample='{sample}',
-        prefix = "trust4/{sample}",
-        trust4_bcrtcr=paths.immune_repertoire.bcrtcr,
-        genome=rules.retrieve_reference_genome.output.fa
+        prefix = "trust4/{sample}/{sample}"
     threads: max(1,min(8,NCORES))
     shell:
         '''
-          run-trust4 -f {params.trust4_bcrtcr} --ref {params.genome} -b {input.bam} -t {threads} -o {params.prefix}
-          rm -f {params.prefix}*fq
+          echo "run-trust4 -f {input.bcrtcr} --ref {input.imgt} -b {input.bam} -t {threads} -o {params.prefix} --abnormalUnmapFlag \
+          && rm -f {params.prefix}*fq" | tee {log}
+
+          run-trust4 -f {input.bcrtcr} --ref {input.imgt} -b {input.bam} -t {threads} -o {params.prefix} --abnormalUnmapFlag \
+          && rm -f {params.prefix}*fq 2>> {log}
         '''
 
-rule cdr3_process:
+## Run TRUST4 simplerep.pl script. This rule was from the old pipeline; however, it might not have any functional use currently.
+rule cdr3_preprocess:
     input:
-        bam=rules.trust4_repertoire.output,
+        cdr3=rules.trust4.output.cdr3
     output:
-        'trust4/{sample}_cdr3.out.processed.txt'
+        txt=paths.trust4.txt,
+        tmp=temp('trust4/{sample}/{sample}_cdr3.out.processed.tmp'),
+        tmpg=temp('trust4/{sample}/{sample}_cdr3.out.processed.tmpg')
     benchmark:
-        'benchmark/{sample}_cdr3_immune_repertoire.tab'
+        'benchmark/{sample}_cdr3_preprocess.tab'
     log:
-        'log/{sample}.cdr3_immune_repertoire.log'
-    params:
-        tmp='trust4/{sample}_cdr3.out.processed.tmp'
+        'log/{sample}_cdr3_preprocess.log'
+    conda:
+        SOURCEDIR+"/../envs/trust4.yaml"
     shell:
-        """
-          perl trust-simplerep.pl {input.bam} > {params.tmp}
-          sed -ig '1,1s/#count/count/g' {params.tmp}
-          awk '{{print FILENAME}}' {params.tmp} | awk '{{print $3}}' FS='\t' | paste {params.tmp} - | awk -F '\t' 'NR==1{{$9="sample"}}1' OFS='\t'> {output}
-          rm {params.tmp}
-        """
+        '''
+          ## Identifies path to the simplerep.pl script from TRUST4 in the current Conda environment
+          script_path=$(conda info --envs | grep -E '\*' | awk '{{print $NF}}')
+
+          echo "perl ${{script_path}}/bin/trust-simplerep.pl {input.cdr3} > {output.tmp} \
+          && sed -ig '1,1s/#count/count/g' {output.tmp} 2>> {log} \
+          && awk '{{print FILENAME}}' {output.tmp} | awk '{{print \$3}}' FS='\t' | paste {output.tmp} - | awk -F '\t' 'NR==1{{\$9="sample"}}1' OFS='\t'> {output.txt}" | tee {log}
+
+          perl ${{script_path}}/bin/trust-simplerep.pl {input.cdr3} > {output.tmp} \
+          && sed -ig '1,1s/#count/count/g' {output.tmp} \
+          && awk '{{print FILENAME}}' {output.tmp} | awk '{{print $3}}' FS='\t' | paste {output.tmp} - | awk -F '\t' 'NR==1{{$9="sample"}}1' OFS='\t'> {output.txt} 2>> {log}
+        '''

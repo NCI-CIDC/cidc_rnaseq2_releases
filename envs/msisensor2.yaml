@@ -1,6 +1,6 @@
-name: immune_repertoire
+name: msisensor2
 channels:
     - conda-forge
     - bioconda
 dependencies:
-    - trust4==1.0.13
+    - msisensor2==0.1

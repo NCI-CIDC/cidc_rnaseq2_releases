@@ -1,6 +1,6 @@
-name: immune_response
+name: trust4
 channels:
     - conda-forge
     - bioconda
 dependencies:
-    - msisensor==0.5
+    - trust4==1.0.13

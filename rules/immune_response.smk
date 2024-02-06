@@ -1,25 +1,26 @@
-## Run msisensor
-rule msisensor2_tumor_call:
+## Run MSIsensor2 to assess microsatellite instability (MSI) in tumor samples
+rule msisensor2:
     input:
         bam=rules.run_star.output.bam,
-        bai=rules.index_bam.output
+        bai=rules.index_bam.output,
+        models=rules.retrieve_immune_refs.output.models,
+        tch=rules.retrieve_immune_refs.output.tch
     output:
-        msisensor="msisensor2/{sample}_msisensor2",
-        msisensor_txt="msisensor2/{sample}_msisensor2.txt",
-        msisensor_dis="msisensor2/{sample}_msisensor2_dis",
-        msisensor_somatic="msisensor2/{sample}_msisensor2_somatic"
+        output=paths.msisensor2.output,
+        dis=paths.msisensor2.dis,
+        somatic=paths.msisensor2.somatic,
+        txt=paths.msisensor2.txt
     benchmark:
-        'benchmark/{sample}_msisensor.tab'
+        'benchmark/{sample}_msisensor2.tab'
     log:
-        'log/{sample}_msisensor.log'
+        'log/{sample}_msisensor2.log'
     conda:
-        SOURCEDIR+"/../envs/immune_response.yaml"
+        SOURCEDIR+"/../envs/msisensor2.yaml"
+    threads: max(1,min(8,NCORES))
     params:
-        sample='{sample}',
-        prefix='msisensor2/{sample}_msisensor2',
-        msisensor2_models= paths.immune_response.msisensor2_models
+        prefix='msisensor2/{sample}_msisensor2'
     shell:
         '''
-          msisensor2 msi -M {params.msisensor2_models} -t {input.bam} -o {params.prefix}
-          cp {output.msisensor} {output.msisensor_txt}
+          echo "msisensor2 msi -M {input.models} -t {input.bam} -o {params.prefix} -b {threads} && cp {output.output} {output.txt}" | tee {log}
+          msisensor2 msi -M {input.models} -t {input.bam} -o {params.prefix} -b {threads} && cp {output.output} {output.txt} 2>> {log}
         '''

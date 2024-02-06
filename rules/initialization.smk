@@ -189,16 +189,23 @@ rule retrieve_ctat_library:
 ## Retrieve immune reference datasets
 rule retrieve_immune_refs:
     output:
-        response=paths.immune_response.msisensor2_models,
-        repertoire=paths.immune_repertoire.bcrtcr
+        models=directory(paths.msisensor2.models),
+        tch='progress/msisensor2_models_downloaded.done',
+        bcrtcr=paths.trust4.bcrtcr,
+        imgt=paths.trust4.imgt
     benchmark:
         'benchmark/retrieve_immune_refs.tab'
+    log:
+        'log/retrieve_immune_refs.log'
     params:
         response_uri=IMMUNE_RESPONSE_URI,
-        repertoire_uri=IMMUNE_REPERTOIRE_URI
-    threads: 1
+        repertoire_uri=IMMUNE_REPERTOIRE_URI,
+        repertoire_imgt_uri=IMMUNE_REPERTOIRE_IMGT_URI
     shell:
         '''
-        gsutil cp -r {params.response_uri} {output.response}
-        gsutil cp {params.repertoire_uri} {output.repertoire}
+          echo "gsutil -m cp -R {params.response_uri} msisensor2 && touch {output.tch}" | tee {log}
+          gsutil -m cp -R {params.response_uri} msisensor2 && touch {output.tch} 2>> {log}
+           
+          echo "gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt}" | tee -a {log}
+          gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt} 2>> {log}
         '''
