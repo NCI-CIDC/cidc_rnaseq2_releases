@@ -90,6 +90,7 @@ RSEQC_HOUSEKEEPING_BED_URI =  reference_df.loc[reference_df["ref_file_name"]=="r
 FUSION_LIB_URI = reference_df.loc[reference_df["ref_file_name"]=="fusion_lib", "google_bucket_URI"].item()
 IMMUNE_RESPONSE_URI = reference_df.loc[reference_df["ref_file_name"]=="immune_response_ref", "google_bucket_URI"].item()
 IMMUNE_REPERTOIRE_URI = reference_df.loc[reference_df["ref_file_name"]=="immune_repertoire_ref", "google_bucket_URI"].item()
+IMMUNE_REPERTOIRE_IMGT_URI = reference_df.loc[reference_df["ref_file_name"]=="immune_repertoire_ref_imgt", "google_bucket_URI"].item()
 
 # Sample info
 ## List of samples to process
@@ -172,8 +173,9 @@ OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
           expand(paths.fusion.tsv, sample=SAMID),
           expand(paths.fusion.tsv_abridged, sample=SAMID),
           expand(paths.fusion.tsv_sample, sample=SAMID),
-          expand(paths.msisensor2.txt, sample=SAMID)]
-         # expand(paths.immune_repertoire.cdr3, sample=SAMID)]
+          expand(paths.msisensor2.txt, sample=SAMID),
+          expand(paths.trust4.cdr3, sample=SAMID),
+          expand(paths.trust4.txt, sample=SAMID)]
 
 if RSEQC == "housekeeping":
     OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))

@@ -1,4 +1,4 @@
-name: immune_repertoire
+name: trust4
 channels:
     - conda-forge
     - bioconda

@@ -191,17 +191,21 @@ rule retrieve_immune_refs:
     output:
         models=directory(paths.msisensor2.models),
         tch='progress/msisensor2_models_downloaded.done',
-        repertoire=paths.immune_repertoire.bcrtcr
+        bcrtcr=paths.trust4.bcrtcr,
+        imgt=paths.trust4.imgt
     benchmark:
         'benchmark/retrieve_immune_refs.tab'
     log:
         'log/retrieve_immune_refs.log'
     params:
         response_uri=IMMUNE_RESPONSE_URI,
-        repertoire_uri=IMMUNE_REPERTOIRE_URI
+        repertoire_uri=IMMUNE_REPERTOIRE_URI,
+        repertoire_imgt_uri=IMMUNE_REPERTOIRE_IMGT_URI
     shell:
         '''
           echo "gsutil -m cp -R {params.response_uri} msisensor2 && touch {output.tch}" | tee {log}
           gsutil -m cp -R {params.response_uri} msisensor2 && touch {output.tch} 2>> {log}
-          gsutil cp {params.repertoire_uri} {output.repertoire}
+           
+          echo "gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt}" | tee -a {log}
+          gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt} 2>> {log}
         '''

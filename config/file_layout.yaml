@@ -87,7 +87,8 @@ msisensor2:
     dis: "{sample}_msisensor2_dis"
     somatic: "{sample}_msisensor2_somatic"
         
-immune_repertoire:
+trust4:
     bcrtcr: "hg38_bcrtcr.fa"
-    trust4: "trust4/{sample}_cdr3.out"
-    cdr3: "trust4/{sample}_cdr3.out.processed.txt"
+    imgt: "human_IMGT+C.fa"
+    cdr3: "{sample}/{sample}_cdr3.out"
+    txt: "{sample}/{sample}_cdr3.out.processed.txt"
