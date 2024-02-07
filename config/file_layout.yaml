@@ -9,6 +9,9 @@ genome:
     dhs: "DHS_hg38.bed"
     tar: "p_compressed+h+v.tar.gz"
     idx: "p_compressed+h+v.3.cf"
+    models: "models_hg38"
+    bcrtcr: "hg38_bcrtcr.fa"
+    imgt: "human_IMGT+C.fa"
 
 annot:
     gtf: "gencode.v37.annotation.gtf.gz"
@@ -83,14 +86,11 @@ fusion:
     tsv_sample: "{sample}/{sample}.fusion_predictions.abridged_addSample.tsv"
 
 msisensor2:
-    models: "models_hg38"
     output: "{sample}_msisensor2"
     txt: "{sample}_msisensor2.txt"
     dis: "{sample}_msisensor2_dis"
     somatic: "{sample}_msisensor2_somatic"
         
 trust4:
-    bcrtcr: "hg38_bcrtcr.fa"
-    imgt: "human_IMGT+C.fa"
     cdr3: "{sample}/{sample}_cdr3.out"
     txt: "{sample}/{sample}_cdr3.out.processed.txt"
