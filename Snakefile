@@ -162,7 +162,7 @@ _logging.basicConfig(level=_logging.INFO,
 ################################
 #     DEFINE TARGET OUTPUT     #
 ################################
-OUTPUT = [expand(paths.centrifuge.classification, sample=SAMID),
+OUTPUT = [expand(paths.centrifuge.tsv_sample, sample=SAMID),
           expand(paths.rseqc.bamqc_txt, sample=SAMID),
           expand(paths.rseqc.bamgc_txt, sample=SAMID),
           expand(paths.fastqc.targz, sample=SAMID),
@@ -221,7 +221,7 @@ rule all:
 ################################
 include: "./rules/initialization.smk"
 include: "./rules/ingest.smk"
-include: "./rules/contamination.smk"
+include: "./rules/microbiome.smk"
 include: "./rules/mapping.smk"
 include: "./rules/rseqc.smk"
 include: "./rules/fusion.smk"

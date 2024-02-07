@@ -7,6 +7,8 @@ genome:
     filtered_fai: "GRCh38.primary_assembly_filtered.genome.fa.fai"
     bed: "GRCh38.primary_assembly_filtered.bed"
     dhs: "DHS_hg38.bed"
+    tar: "p_compressed+h+v.tar.gz"
+    idx: "p_compressed+h+v.3.cf"
 
 annot:
     gtf: "gencode.v37.annotation.gtf.gz"
@@ -28,10 +30,10 @@ rqual_filter:
 
 ## CONTAMINATION
 centrifuge:
-    classification: "{sample}_classification.txt"
-    report: "{sample}_report.txt"
-    tar: "p_compressed+h+v.tar.gz"
-    db: "p_compressed+h+v.1.cf"
+    txt: "{sample}_classification.txt"
+    gz: "{sample}_classification.txt.gz"
+    tsv: "{sample}_centrifuge_report.tsv"
+    tsv_sample: "{sample}_centrifuge_addSample_report.tsv"
 
 ## MAPPING
 bam:
