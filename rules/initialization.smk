@@ -121,8 +121,7 @@ rule retrieve_hg38_blacklist:
           gunzip {output}.gz
         '''
 
-## Retrieve DHS regions list from dev GCP bucket. This might not be final location of the file.
-## If file location changes, the shell directive needs to be updated.
+## Retrieve DHS regions list from GCP bucket
 rule retrieve_hg38_dhs:
     output:
         paths.genome.dhs
@@ -134,8 +133,7 @@ rule retrieve_hg38_dhs:
     shell:
         "gsutil cp {params.dhs_uri} {output}"
 
-## Retrieve evolutionary bigwig file dev GCP bucket. This might not be final location of the file.
-## If file location changes, the shell directive needs to be updated.
+## Retrieve evolutionary bigwig file GCP bucket
 rule retrieve_conservation_bw:
     output:
         paths.annot.bw
@@ -186,13 +184,13 @@ rule retrieve_ctat_library:
           gsutil -m cp -R {params.lib} annot && touch {output.tch} 2>> {log}
         '''
 
-## Retrieve immune reference datasets
+## Retrieve reference datasets for immune repsonse (MSIsensor2) and immume repertoire (TRUST4) modules
 rule retrieve_immune_refs:
     output:
-        models=directory(paths.msisensor2.models),
+        models=directory(paths.genome.models),
         tch='progress/msisensor2_models_downloaded.done',
-        bcrtcr=paths.trust4.bcrtcr,
-        imgt=paths.trust4.imgt
+        bcrtcr=paths.genome.bcrtcr,
+        imgt=paths.genome.imgt
     benchmark:
         'benchmark/retrieve_immune_refs.tab'
     log:
@@ -203,9 +201,30 @@ rule retrieve_immune_refs:
         repertoire_imgt_uri=IMMUNE_REPERTOIRE_IMGT_URI
     shell:
         '''
-          echo "gsutil -m cp -R {params.response_uri} msisensor2 && touch {output.tch}" | tee {log}
-          gsutil -m cp -R {params.response_uri} msisensor2 && touch {output.tch} 2>> {log}
+          echo "gsutil -m cp -R {params.response_uri} genome && touch {output.tch}" | tee {log}
+          gsutil -m cp -R {params.response_uri} genome && touch {output.tch} 2>> {log}
            
           echo "gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt}" | tee -a {log}
           gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt} 2>> {log}
+        '''
+
+## Retrieve Centrifuge index (bacteria, archaea, viruses, and human) for the microbiome module
+rule retrieve_centrifuge_idx:
+    output:
+        tar=temp(paths.genome.tar),
+        idx=paths.genome.idx,
+        tch='progress/centrifuge_idx_downloaded.done'
+    benchmark:
+        'benchmark/retrieve_centrifuge_idx.tab'
+    log:
+        'log/retrieve_centrifuge_idx.log'
+    params:
+        cfug_uri=CFUG_REF
+    shell:
+        '''
+          echo "gsutil cp {params.cfug_uri} {output.tar} && tar -xvzf {output.tar} -C genome \
+          && touch {output.tch}" | tee {log}
+
+          gsutil cp {params.cfug_uri} {output.tar} && tar -xvzf {output.tar} -C genome \
+          && touch {output.tch} 2>> {log}
         '''

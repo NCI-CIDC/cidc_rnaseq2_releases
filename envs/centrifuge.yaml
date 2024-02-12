@@ -1,0 +1,7 @@
+name: centrifuge
+channels:
+    - conda-forge
+    - bioconda
+dependencies:
+    - centrifuge=1.0.4.1
+    - ete3=3.1.3
