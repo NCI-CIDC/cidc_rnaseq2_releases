@@ -1,0 +1,7 @@
+# quantification environment 
+name: quantification_env
+channels:
+- bioconda
+dependencies:
+- salmon=1.10.2
+- gffread=0.12.7

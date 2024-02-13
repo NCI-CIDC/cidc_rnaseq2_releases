@@ -53,3 +53,8 @@ rseqc:
 fastqc:
     targz: "{sample}_filtered_fastqc.tar.gz"
 
+## QUANTIFICATION
+gffread:
+    fa: "{sample}.gffread.fa"
+salmon:
+    quants: "{sample}.salmon.sf"
