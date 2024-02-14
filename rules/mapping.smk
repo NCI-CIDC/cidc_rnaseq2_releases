@@ -1,4 +1,4 @@
-## Map reads to the reference genome using STAR and output sorted bam
+## Map reads to the reference genome using STAR and output sorted bam.
 rule run_star:
     input:
         tch=rules.build_star_index.output,
@@ -24,23 +24,33 @@ rule run_star:
           --readFilesIn {params.in_fa_str} --readFilesCommand zcat \
           --outSAMstrandField intronMotif --outSAMunmapped Within --outSAMtype BAM SortedByCoordinate \
           --outReadsUnmapped None --chimSegmentMin 12 --chimJunctionOverhangMin 12 --chimOutJunctionFormat 1 \
-          --alignSJDBoverhangMin 10 --alignMatesGapMax 1000000 --alignIntronMax 1000000 --alignSJstitchMismatchNmax 5 -1 5 5 \
-          --chimMultimapScoreRange 10 --chimMultimapNmax 10 --chimNonchimScoreDropMin 10 \
+          --alignSJDBoverhangMin 10 --alignMatesGapMax 100000 --alignIntronMax 100000 --alignSJstitchMismatchNmax 5 -1 5 5 \
+          --chimMultimapScoreRange 3 --chimMultimapNmax 20 --chimNonchimScoreDropMin 10 \
           --peOverlapNbasesMin 12 --peOverlapMMp 0.1 \
           --twopassMode Basic --quantMode TranscriptomeSAM GeneCounts \
+          --outSAMattrRGline ID:GRPundef SM:{wildcards.sample} \
           --outFileNamePrefix bam/{params.sample}. \
-          --outStd BAM_SortedByCoordinate > {output.bam}" | tee {log}
-          
+          --outStd BAM_SortedByCoordinate \
+          --chimScoreJunctionNonGTAG -4 \
+          --alignInsertionFlush Right \
+          --alignSplicedMateMapLminOverLmate 0 \
+          --alignSplicedMateMapLmin 30 > {output.bam}" | tee {log}
+
           STAR --runThreadN {threads} --genomeDir genome/star_index \
           --readFilesIn {params.in_fa_str} --readFilesCommand zcat \
           --outSAMstrandField intronMotif --outSAMunmapped Within --outSAMtype BAM SortedByCoordinate \
           --outReadsUnmapped None --chimSegmentMin 12 --chimJunctionOverhangMin 12 --chimOutJunctionFormat 1 \
-          --alignSJDBoverhangMin 10 --alignMatesGapMax 1000000 --alignIntronMax 1000000 --alignSJstitchMismatchNmax 5 -1 5 5 \
-          --chimMultimapScoreRange 10 --chimMultimapNmax 10 --chimNonchimScoreDropMin 10 \
+          --alignSJDBoverhangMin 10 --alignMatesGapMax 100000 --alignIntronMax 100000 --alignSJstitchMismatchNmax 5 -1 5 5 \
+          --chimMultimapScoreRange 3 --chimMultimapNmax 20 --chimNonchimScoreDropMin 10 \
           --peOverlapNbasesMin 12 --peOverlapMMp 0.1 \
           --twopassMode Basic --quantMode TranscriptomeSAM GeneCounts \
+          --outSAMattrRGline ID:GRPundef SM:{wildcards.sample} \
           --outFileNamePrefix bam/{params.sample}. \
-          --outStd BAM_SortedByCoordinate > {output.bam} 2>> {log}
+          --outStd BAM_SortedByCoordinate \
+          --chimScoreJunctionNonGTAG -4 \
+          --alignInsertionFlush Right \
+          --alignSplicedMateMapLminOverLmate 0 \
+          --alignSplicedMateMapLmin 30 > {output.bam} 2>> {log}
         '''
 
 ## Index BAM

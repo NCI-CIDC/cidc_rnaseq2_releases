@@ -169,7 +169,7 @@ rule retrieve_rseqc_beds:
 ## Retrieve Trinity Cancer Transcriptome Analysis Toolkit (CTAT) human hg38 library for STAR-Fusion 
 rule retrieve_ctat_library:
     output:
-        lib=directory(paths.annot.lib),
+        lib=directory(paths.genome.lib),
         tch='progress/ctat_lib_downloaded.done'
     benchmark:
         'benchmark/retrieve_ctat_library.tab'
@@ -180,8 +180,8 @@ rule retrieve_ctat_library:
         predir=PREDIR
     shell:
         '''
-          echo "gsutil -m cp -R {params.lib} annot && touch {output.tch}" | tee {log}
-          gsutil -m cp -R {params.lib} annot && touch {output.tch} 2>> {log}
+          echo "gsutil -m cp -R {params.lib} genome && touch {output.tch}" | tee {log}
+          gsutil -m cp -R {params.lib} genome && touch {output.tch} 2>> {log}
         '''
 
 ## Retrieve reference datasets for immune repsonse (MSIsensor2) and immume repertoire (TRUST4) modules
