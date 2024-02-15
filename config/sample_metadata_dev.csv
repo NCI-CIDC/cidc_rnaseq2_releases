@@ -1,2 +1,3 @@
 subid,samid,time,timel,timec,timeb,spct,spctl,spctc,factor,replicate,trt,trtl,trtc,fastq_file_1,fastq_file_2,bam_file,threep_adapter_seq,fivep_adapter_seq
 ,16097-110,,,,,,,,,,,,,,,gs://cidc-rnaseq-test-data/bam/16097-110_Tumor_RNA_01.duplicate_marked.coordinate_sorted.bam,,
+,14362-123,,,,,,,,,,,,,,,gs://cidc-rnaseq-test-data/bam/14362-123_Tumor_RNA_01.duplicate_marked.coordinate_sorted.bam,,

@@ -13,9 +13,10 @@ genome:
     bcrtcr: "hg38_bcrtcr.fa"
     imgt: "human_IMGT+C.fa"
     lib: "ctat_genome_lib_build_dir"
+    transcripts: "gencode.v37.transcripts.fa"
 
 annot:
-    gtf: "gencode.v37.annotation.gtf.gz"
+    gtf: "gencode.v37.annotation.gtf"
     bed: "GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.bed"
     bw: "hg38.phastCons100way.bw"
     refseq_bed: "hg38_RefSeq.bed"
@@ -94,3 +95,6 @@ msisensor2:
 trust4:
     cdr3: "{sample}/{sample}_cdr3.out"
     txt: "{sample}/{sample}_cdr3.out.processed.txt"
+
+salmon:
+    sf: "{sample}/{sample}_quant.sf"
