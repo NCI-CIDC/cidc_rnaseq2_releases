@@ -12,3 +12,4 @@ fusion_lib,gs://cidc-rna-reference-v1/ctat_genome_lib_build_dir,gs://cidc-rna-re
 immune_response_ref,gs://cidc-rna-reference-v1/models_hg38,https://github.com/niu-lab/msisensor2/tree/master/models_hg38
 immune_repertoire_ref,gs://cidc-rna-reference-v1/hg38_bcrtcr.fa,https://github.com/liulab-dfci/TRUST4/blob/master/hg38_bcrtcr.fa
 immune_repertoire_ref_imgt,gs://cidc-rna-reference-v1/human_IMGT+C.fa,https://raw.githubusercontent.com/liulab-dfci/TRUST4/master/human_IMGT%2BC.fa
+transcripts_fa,gs://cidc-rna-reference-v1/gencode.v37.transcripts.fa,gs://cidc-rna-reference-v1/gencode.v37.transcripts.fa_README.txt

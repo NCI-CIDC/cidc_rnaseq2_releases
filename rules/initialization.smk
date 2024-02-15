@@ -30,10 +30,10 @@ rule retrieve_reference_genome:
     threads: 1
     shell:
         '''
-          echo "downloading genome to map reads to GRCh38 or hg38..." | tee {log}
+          echo "gsutil cp {params.fa_uri} {output.fa}.gz && gunzip {output.fa}.gz" | tee {log}
           gsutil cp {params.fa_uri} {output.fa}.gz && gunzip {output.fa}.gz
           
-          echo "downloading supporting GTF annotations..." | tee -a {log}
+          echo "gsutil cp {params.gtf_uri} {output.gtf}.gz && gunzip {output.gtf}.gz" | tee -a {log}
           gsutil cp {params.gtf_uri} {output.gtf}.gz && gunzip {output.gtf}.gz
         '''
 
@@ -159,11 +159,11 @@ rule retrieve_rseqc_beds:
        housekeeping_uri=RSEQC_HOUSEKEEPING_BED_URI
     shell:
        '''
-       echo "gsutil cp {params.bed_uri} {output.bed}.gz && gunzip -k {output.bed}.gz" | tee {log}
-       gsutil cp {params.bed_uri} {output.bed}.gz && gunzip -k {output.bed}.gz 2>> {log}
+       echo "gsutil cp {params.bed_uri} {output.bed}.gz && gunzip {output.bed}.gz" | tee {log}
+       gsutil cp {params.bed_uri} {output.bed}.gz && gunzip {output.bed}.gz 2>> {log}
 
-       echo "gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz" | tee -a {log}
-       gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip -k {output.housekeeping_bed}.gz 2>> {log}
+       echo "gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip {output.housekeeping_bed}.gz" | tee -a {log}
+       gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip {output.housekeeping_bed}.gz 2>> {log}
        '''
 
 ## Retrieve Trinity Cancer Transcriptome Analysis Toolkit (CTAT) human hg38 library for STAR-Fusion 
@@ -227,4 +227,20 @@ rule retrieve_centrifuge_idx:
 
           gsutil cp {params.cfug_uri} {output.tar} && tar -xvzf {output.tar} -C genome \
           && touch {output.tch} 2>> {log}
+        '''
+
+## Retrieve Gencode transcripts fasta for Salmon in the quantification module
+rule retrieve_transcripts_fa:
+    output:
+        fa=paths.genome.transcripts
+    benchmark:
+        'benchmark/retrieve_transcripts_fa.tab'
+    log:
+        'log/retrieve_transcripts_fa.log'
+    params:
+        fa_uri=TRANSCRIPTS_FA_URI
+    shell:
+        '''
+          echo "gsutil cp {params.fa_uri} {output.fa}" | tee {log}
+          gsutil cp {params.fa_uri} {output.fa} 2>> {log}
         '''
