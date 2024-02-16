@@ -98,3 +98,12 @@ trust4:
 
 salmon:
     sf: "{sample}/{sample}_quant.sf"
+
+arcashla:
+    fq1: "{sample}/{sample}.extracted.1.fq.gz"
+    fq2: "{sample}/{sample}.extracted.2.fq.gz"
+    p: "{sample}/{sample}.alignment.p"
+    json_genes: "{sample}/{sample}.genes.json"
+    json_genotype: "{sample}/{sample}.genotype.json"
+    log: "{sample}/{sample}.genotype.log"
+    merge: "merge/{sample}.genotype.json"
