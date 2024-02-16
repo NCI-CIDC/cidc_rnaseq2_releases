@@ -247,7 +247,7 @@ rule retrieve_transcripts_fa:
 
 ## Clone the IPD-IMGT/HLA repository and set up the database for use in the neoantigen module (arcasHLA).
 ## Due to the increasing size of the hla.dat file, the repository now requires the use of the Git LFS 
-##  tools (https://git-lfs.github.com) to handle files over 100MB in size.
+## tools (https://git-lfs.github.com) to handle files over 100MB in size.
 rule retrieve_imgthla_db:
     output:
         tch='progress/imgthla_db_downloaded.done'
