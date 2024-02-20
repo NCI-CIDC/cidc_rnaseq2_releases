@@ -244,3 +244,21 @@ rule retrieve_transcripts_fa:
           echo "gsutil cp {params.fa_uri} {output.fa}" | tee {log}
           gsutil cp {params.fa_uri} {output.fa} 2>> {log}
         '''
+
+## Clone the IPD-IMGT/HLA repository and set up the database for use in the neoantigen module (arcasHLA).
+## Due to the increasing size of the hla.dat file, the repository now requires the use of the Git LFS 
+## tools (https://git-lfs.github.com) to handle files over 100MB in size.
+rule retrieve_imgthla_db:
+    output:
+        tch='progress/imgthla_db_downloaded.done'
+    benchmark:
+        'benchmark/retrieve_imgthla_db.tab'
+    log:
+        'log/retrieve_imgthla_db.log'
+    conda:
+        SOURCEDIR+"/../envs/arcashla.yaml"
+    shell:
+        '''
+          echo "git lfs install && arcasHLA reference --commit df6ba6f --verbose && touch {output.tch}" | tee {log}
+          git lfs install && arcasHLA reference --commit df6ba6f --verbose && touch {output.tch} 2>> {log}
+        '''

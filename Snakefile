@@ -177,7 +177,9 @@ OUTPUT = [expand(paths.centrifuge.tsv_sample, sample=SAMID),
           expand(paths.msisensor2.txt, sample=SAMID),
           expand(paths.trust4.cdr3, sample=SAMID),
           expand(paths.trust4.txt, sample=SAMID),
-          expand(paths.salmon.sf, sample=SAMID)]
+          expand(paths.salmon.sf, sample=SAMID),
+          expand(paths.arcashla.json_genotype, sample=SAMID),
+          expand(paths.arcashla.merge, sample=SAMID)]
 
 if RSEQC == "housekeeping":
     OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))
@@ -230,3 +232,4 @@ include: "./rules/fusion.smk"
 include: "./rules/immune_repertoire.smk"
 include: "./rules/immune_response.smk"
 include: "./rules/quantification.smk"
+include: "./rules/neoantigen.smk"
