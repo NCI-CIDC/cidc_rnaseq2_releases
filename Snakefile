@@ -81,9 +81,6 @@ sample_metadata_df = pd.read_table(config["sample_metadata"], sep=",", keep_defa
 GENOME_FA_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_fa", "google_bucket_URI"].item()
 GENOME_GTF_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_gtf", "google_bucket_URI"].item()
 GENOME_STAR_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_star_index", "google_bucket_URI"].item()
-GENOME_BLACKLIST_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_blacklist", "google_bucket_URI"].item()
-GENOME_DHS_URI = reference_df.loc[reference_df["ref_file_name"]=="genome_dhs", "google_bucket_URI"].item()
-GENOME_CONSERVATION_URI = reference_df.loc[reference_df["ref_file_name"]=="conservation", "google_bucket_URI"].item()
 CFUG_REF = reference_df.loc[reference_df["ref_file_name"]=="centrifuge", "google_bucket_URI"].item()
 RSEQC_BED_URI = reference_df.loc[reference_df["ref_file_name"]=="rseqc_bed", "google_bucket_URI"].item()
 RSEQC_HOUSEKEEPING_BED_URI =  reference_df.loc[reference_df["ref_file_name"]=="rseqc_housekeeping_bed", "google_bucket_URI"].item()
@@ -117,7 +114,7 @@ workdir: PREDIR
 ## number of cores dedicated to run
 NCORES  = int(config["ncores"])
 ## initial sub folders
-SUBDIRS  = 'benchmark log info progress genome annot input analysis analysis/data analysis/report'
+SUBDIRS  = 'benchmark log info progress ref_files input analysis analysis/data analysis/report'
 
 ## Set single or paired end
 if (FASTQ_2[0] != '' or BAM[0] != ''):
@@ -164,9 +161,8 @@ _logging.basicConfig(level=_logging.INFO,
 #     DEFINE TARGET OUTPUT     #
 ################################
 OUTPUT = [expand(paths.centrifuge.tsv_sample, sample=SAMID),
-          expand(paths.rseqc.bamqc_txt, sample=SAMID),
-          expand(paths.rseqc.bamgc_txt, sample=SAMID),
-          expand(paths.fastqc.targz, sample=SAMID),
+          expand(paths.rseqc.stat_txt, sample=SAMID),
+          expand(paths.rseqc.gc_txt, sample=SAMID),
           expand(paths.rseqc.rd_txt, sample=SAMID),
           expand(paths.rseqc.gbc_png, sample=SAMID),
           expand(paths.rseqc.js_plot, sample=SAMID),
@@ -179,7 +175,8 @@ OUTPUT = [expand(paths.centrifuge.tsv_sample, sample=SAMID),
           expand(paths.trust4.txt, sample=SAMID),
           expand(paths.salmon.sf, sample=SAMID),
           expand(paths.arcashla.json_genotype, sample=SAMID),
-          expand(paths.arcashla.merge, sample=SAMID)]
+          expand(paths.arcashla.merge, sample=SAMID),
+          paths.rseqc.log]
 
 if RSEQC == "housekeeping":
     OUTPUT.append(expand(paths.rseqc.ts_xls_hk, sample=SAMID))

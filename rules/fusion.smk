@@ -28,4 +28,7 @@ rule star_fusion:
           && mv {params.predir}/fusion/{wildcards.sample}/star-fusion.fusion_predictions.tsv {output.tsv} \
           && mv {params.predir}/fusion/{wildcards.sample}/star-fusion.fusion_predictions.abridged.tsv {output.tsv_abridged} \
           && awk 'BEGIN{{OFS="\t"}} NR==1{{$0=$0"\tsample"}} NR>1{{$0=$0"\t{wildcards.sample}"}} 1' {output.tsv_abridged} > {output.tsv_sample} 2>> {log} 
+
+          ## Export rule env details
+          conda env export --no-builds > info/star_fusion.info
         '''

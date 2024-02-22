@@ -16,7 +16,7 @@ rule centrifuge:
     conda: 
         SOURCEDIR+"/../envs/centrifuge.yaml"
     params:
-        idx=PREDIR+"/genome/p_compressed+h+v",
+        idx=PREDIR+"/ref_files/p_compressed+h+v",
         txt=paths.centrifuge.txt
     threads: max(1,min(8,NCORES))
     shell:
@@ -28,4 +28,7 @@ rule centrifuge:
           centrifuge -x {params.idx} -p {threads} --host-taxids 9606 -1 {input.r1} -2 {input.r2} -S {params.txt} --report-file {output.tsv} \
           && gzip {params.txt} \
           && awk -v sampleID="{wildcards.sample}" 'BEGIN {{OFS="\t"}} {{if (NR == 1) print "sample", $0; else print sampleID, $0}}' {output.tsv} > {output.tsv_sample} 2>> {log}
+ 
+          ## Export rule env details
+          conda env export --no-builds > info/centrifuge.info
         '''

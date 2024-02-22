@@ -1,12 +1,10 @@
 ## INITIALIZE
-genome:
+ref_files:
     fa: "GRCh38.primary_assembly.genome.fa"
-    size: "genome.size"
     fai: "GRCh38.primary_assembly.genome.fa.fai"
-    blacklist: "hg38-blacklist.v2.bed"
-    filtered_fai: "GRCh38.primary_assembly_filtered.genome.fa.fai"
-    bed: "GRCh38.primary_assembly_filtered.bed"
-    dhs: "DHS_hg38.bed"
+    gtf: "gencode.v37.annotation.gtf"
+    refseq_bed: "hg38_RefSeq.bed"
+    housekeeping_bed: "hg38.HouseKeepingGenes.bed"
     tar: "p_compressed+h+v.tar.gz"
     idx: "p_compressed+h+v.3.cf"
     models: "models_hg38"
@@ -14,13 +12,6 @@ genome:
     imgt: "human_IMGT+C.fa"
     lib: "ctat_genome_lib_build_dir"
     transcripts: "gencode.v37.transcripts.fa"
-
-annot:
-    gtf: "gencode.v37.annotation.gtf"
-    bed: "GCA_000001405.15_GRCh38_full_analysis_set.refseq_annotation.bed"
-    bw: "hg38.phastCons100way.bw"
-    refseq_bed: "hg38_RefSeq.bed"
-    housekeeping_bed: "hg38.HouseKeepingGenes.bed"
 
 ## INGEST
 input:
@@ -32,7 +23,7 @@ rqual_filter:
     qfilter_fastq_single: "{{sample}}_{read}_qual.fastq.gz"
     qfilter_fastq_paired: "{{sample}}_{read}{paired}_qual.fastq.gz"
 
-## CONTAMINATION
+## MICROBIOME
 centrifuge:
     txt: "{sample}_classification.txt"
     gz: "{sample}_classification.txt.gz"
@@ -45,15 +36,6 @@ bam:
     index: "{sample}.bam.bai"
     bam_transcriptome: "{sample}.Aligned.toTranscriptome.out.bam"
     chimeric_junction: "{sample}.Chimeric.out.junction"
-    dup_bam: "{sample}_dup.bam"
-    flags_bam: "{sample}_flags.bam"
-    blacklist_bam: "{sample}_blacklist.bam"
-    fixmate_bam: "{sample}_fixmate.bam"
-    filtered_bam: "{sample}_filtered.bam"
-    filtered_index: "{sample}_filtered.bam.bai"
-    metrics: "{sample}_marked_duplicates_metrics.txt"
-    sampled_bam: "{sample}_sampled.bam"
-    sampled_index: "{sample}_sampled.bam.bai"
     stats: "{sample}_sorted_bam_stats.txt"
     size: "{sample}_bam_size.txt"
     downsampled_bam: "{sample}_downsampling.bam"
@@ -61,10 +43,11 @@ bam:
     housekeeping_bam: "{sample}_housekeeping.bam"
     housekeeping_bai: "{sample}_housekeeping.bam.bai"
 
+## QC
 rseqc:
-    bamqc_txt: "{sample}_bam_qc.txt"
-    bamgc_txt: "{sample}_bam_gc.txt"
-    bamgc_r: "{sample}.GC_plot.r"
+    stat_txt: "bam_stat/{sample}_bam_stat.txt"
+    gc_txt: "read_gc/{sample}_read_gc.txt"
+    gc_r: "read_gc/{sample}.GC_plot.r"
     ts_txt: "tin_score/{sample}_downsampling.summary.txt"
     ts_xls: "tin_score/{sample}_downsampling.tin.xls"
     ts_txt_hk: "tin_score/{sample}_housekeeping.summary.txt"
@@ -77,28 +60,31 @@ rseqc:
     js_r: "junction_saturation/{sample}.junctionSaturation_plot.r"
     is_txt: "insert_size/{sample}_insert_size_metrics.txt"
     is_pdf: "insert_size/{sample}_insert_size_histogram.pdf"
+    log: "gene_body_coverage/log.txt"
 
-fastqc:
-    targz: "{sample}_filtered_fastqc.tar.gz"
-
+## FUSION
 fusion:
     tsv: "{sample}/{sample}.fusion_predictions.tsv"
     tsv_abridged: "{sample}/{sample}.fusion_predictions.abridged.tsv"
     tsv_sample: "{sample}/{sample}.fusion_predictions.abridged_addSample.tsv"
 
+## IMMUNE RESPONSE
 msisensor2:
     output: "{sample}_msisensor2"
     txt: "{sample}_msisensor2.txt"
     dis: "{sample}_msisensor2_dis"
     somatic: "{sample}_msisensor2_somatic"
-        
+
+## IMMUNE REPERTOIRE
 trust4:
     cdr3: "{sample}/{sample}_cdr3.out"
     txt: "{sample}/{sample}_cdr3.out.processed.txt"
 
+## QUANTIFICATION
 salmon:
     sf: "{sample}/{sample}_quant.sf"
 
+## NEOANTIGEN
 arcashla:
     fq1: "{sample}/{sample}.extracted.1.fq.gz"
     fq2: "{sample}/{sample}.extracted.2.fq.gz"
