@@ -59,8 +59,12 @@ rule bam2fastq:
         '''
           echo "samtools collate -@ {threads} -u -O {input.bam} | \
           samtools fastq -@ {threads} -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null -n" | tee {log}
+         
           samtools collate -@ {threads} -u -O {input.bam} | \
           samtools fastq -@ {threads} -1 {output.fq1} -2 {output.fq2} -0 /dev/null -s /dev/null -n 2>> {log}
+     
+          ## Export rule env details
+          conda env export --no-builds > info/samtools.info
         '''
 
 ### Optionally trim adapters with cutadapt
@@ -99,7 +103,7 @@ rule trimadapters:
         --cutadapt cutadapt --sample {params.sample} --input {params.input_joined} --output {params.output_joined} --threads {threads} --log {log}\
         2>> {log}
 
-        ## export rule env details
+        ## Export rule env details
         conda env export --no-builds > info/trimadapters.info
       '''
 

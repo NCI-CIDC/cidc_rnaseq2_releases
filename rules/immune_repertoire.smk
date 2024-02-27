@@ -23,6 +23,9 @@ rule trust4:
 
           run-trust4 -f {input.bcrtcr} --ref {input.imgt} -b {input.bam} -t {threads} -o {params.prefix} --abnormalUnmapFlag \
           && rm -f {params.prefix}*fq 2>> {log}
+
+          ## Export rule env details
+          conda env export --no-builds > info/trust4.info
         '''
 
 ## Run TRUST4 simplerep.pl script. This rule was from the old pipeline; however, it might not have any functional use currently.

@@ -17,5 +17,8 @@ rule salmon:
     shell:
         '''
           echo "salmon quant -t {input.fa} -l A -a {input.bam} -p {threads} -o {params.path} && mv {params.path}/quant.sf {output.sf}" | tee {log}
-          salmon quant -t {input.fa} -l A -a {input.bam} -p {threads} -o {params.path} && mv {params.path}/quant.sf {output.sf} 2>> {log} 
+          salmon quant -t {input.fa} -l A -a {input.bam} -p {threads} -o {params.path} && mv {params.path}/quant.sf {output.sf} 2>> {log}
+         
+          ## Export rule env details
+          conda env export --no-builds > info/salmon.info 
         '''

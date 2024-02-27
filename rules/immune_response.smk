@@ -23,4 +23,7 @@ rule msisensor2:
         '''
           echo "msisensor2 msi -M {input.models} -t {input.bam} -o {params.prefix} -b {threads} && cp {output.output} {output.txt}" | tee {log}
           msisensor2 msi -M {input.models} -t {input.bam} -o {params.prefix} -b {threads} && cp {output.output} {output.txt} 2>> {log}
+          
+          ## Export rule env details
+          conda env export --no-builds > info/msisensor2.info
         '''

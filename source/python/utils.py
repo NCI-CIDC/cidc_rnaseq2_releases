@@ -264,12 +264,12 @@ def mergeRSEQC(srcdir, run_read_dist=0):
     retvals = ['rseqc/bam_qc_parsed.tab', 'rseqc/bam_gc_parsed.tab']
 
     ## QC
-    snakemake.shell("find rseqc | grep -P 'bam_qc.txt$' > bam_qc_outfiles.txt")
+    snakemake.shell("find rseqc/bam_stat | grep -P 'bam_stat.txt$' > bam_qc_outfiles.txt")
     snakemake.shell("perl {srcdir}/perl/parse-rseqc-bam-qc-results.pl bam_qc_outfiles.txt > rseqc/bam_qc_parsed.tab")
     snakemake.shell("rm bam_qc_outfiles.txt")
 
     ## GC
-    snakemake.shell("find rseqc | grep -P 'bam_gc.txt$' > bam_gc_outfiles.txt")
+    snakemake.shell("find rseqc/read_gc | grep -P 'read_gc.txt$' > bam_gc_outfiles.txt")
     snakemake.shell("perl {srcdir}/perl/parse-rseqc-bam-gc-results.pl bam_gc_outfiles.txt > rseqc/bam_gc_parsed.tab")
     snakemake.shell("rm bam_gc_outfiles.txt")
 

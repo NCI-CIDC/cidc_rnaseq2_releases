@@ -1,3 +1,53 @@
+## Summarizes mapping statistics of the aligned BAM
+rule bam_stat:
+    input:
+        bam=rules.housekeeping_bam.output.bam if RSEQC=='housekeeping' else rules.downsample_bam.output.bam,
+        bai=rules.housekeeping_bam.output.bai if RSEQC=='housekeeping' else rules.downsample_bam.output.bai
+    output:
+        txt=paths.rseqc.stat_txt
+    benchmark:
+        'benchmark/{sample}_bam_qc.tab'
+    log:
+        'log/{sample}_bam_qc.tab'
+    conda:
+        SOURCEDIR+"/../envs/rseqc.yaml"
+    shell:
+        '''
+          echo "bam_stat.py -i {input.bam} > {output.txt}" | tee {log}
+          bam_stat.py -i {input.bam} > {output.txt} 2>> {log}
+
+          ## Export rule env details
+          conda env export --no-builds > info/rseqc.info
+        '''
+
+## Calculates GC content distribution of reads with RSeQC 
+rule read_gc:
+    input:
+        bam=rules.housekeeping_bam.output.bam if RSEQC=='housekeeping' else rules.downsample_bam.output.bam,
+        bai=rules.housekeeping_bam.output.bai if RSEQC=='housekeeping' else rules.downsample_bam.output.bai
+    output:
+        r=paths.rseqc.gc_r,
+        txt=paths.rseqc.gc_txt
+    benchmark:
+        'benchmark/{sample}_read_gc.tab'
+    log:
+        'log/{sample}_read_gc.log'
+    conda:
+        SOURCEDIR+"/../envs/rseqc.yaml"
+    params:
+        sample='{sample}'
+    shell:
+      '''
+        echo "read_GC.py -i {input.bam} -o rseqc/read_gc/{params.sample}" | tee {log}
+        read_GC.py -i {input.bam} -o rseqc/read_gc/{params.sample} 2>> {log}
+
+        ## R script to get txt output info
+        echo "out=as.vector(summary(gc));dta = data.frame('{params.sample}',out[1],out[2],out[3],out[4],out[5],out[6]);write.table(dta,file='{output.txt}',sep="\t",row.names=F,col.names=F,quote=F);" >> {output.r}
+        sed -i "s/pdf/png/g" {output.r}
+        sed -i 's/main=""/main="{params.sample}"/g' {output.r}
+        Rscript --vanilla --quiet {output.r}
+      '''
+
 ## Measures transcript integrity number (TIN) with RSeQC
 rule tin_score:
     input:
@@ -96,7 +146,7 @@ rule collect_insert_size:
     input:
         bam=rules.housekeeping_bam.output.bam if RSEQC=='housekeeping' else rules.downsample_bam.output.bam,
         bai=rules.housekeeping_bam.output.bai if RSEQC=='housekeeping' else rules.downsample_bam.output.bai,
-        fa=paths.genome.fa # this might need to be changed depending on what is used for alignment
+        fa=paths.ref_files.fa
     output:
         txt=paths.rseqc.is_txt,
         pdf=paths.rseqc.is_pdf
@@ -105,11 +155,32 @@ rule collect_insert_size:
     log:
         'log/{sample}_collect_insert_size.log'
     conda:
-        SOURCEDIR+"/../envs/filter_bam.yaml"
+        SOURCEDIR+"/../envs/picard.yaml"
     params:
         predir=PREDIR
     shell:
         '''
           echo "picard CollectInsertSizeMetrics I={input.bam} R={input.fa} M=0.5 O={output.txt} H={output.pdf}" | tee {log}
           picard CollectInsertSizeMetrics I={input.bam} R={input.fa} M=0.5 O={output.txt} H={output.pdf} 2>> {log}
+
+          ## Export rule env details
+          conda env export --no-builds > info/picard.info
+        '''
+
+## Moves the log.txt that is generated with rule gene_body_coverage (geneBody_coverage.py) from PREDIR to the rseqc/gene_body_coverage directory 
+rule gene_body_coverage_log:
+    input:
+        expand(paths.rseqc.gbc_png, sample=SAMID)
+    output:
+        log=paths.rseqc.log
+    benchmark:
+        'benchmark/gene_body_coverage_log.tab'
+    log:
+        'log/gene_body_coverage_log.log'
+    params:
+        predir=PREDIR
+    shell:
+        '''
+          echo "mv PREDIR/log.txt {output.log}" | tee {log}
+          mv {params.predir}/log.txt {output.log} 2>> {log}
         '''

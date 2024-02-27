@@ -19,6 +19,9 @@ rule arcashla_extract:
         '''
           echo "arcasHLA extract {input.bam} -t {threads} -v -o {params.path}" | tee {log}
           arcasHLA extract {input.bam} -t {threads} -v -o {params.path} 2>> {log}
+
+          ## Export rule env details
+          conda env export --no-builds > info/arcashla.info
         '''
 
 ## Genotypes HLA alleles from extracted reads (no partial alleles) with arcasHLA
