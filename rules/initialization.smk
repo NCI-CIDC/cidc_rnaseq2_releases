@@ -59,10 +59,10 @@ rule build_star_index:
           touch {output} 
         '''
 
-## Retrieve hg38 RefSeq genes bed and hg38 housekeeping genes bed for the RSeQC module
+## Retrieve Gencode v37 comprehesive genes bed and Gencode v37 housekeeping genes bed for the RSeQC module
 rule retrieve_rseqc_beds:
     output:
-       bed=paths.ref_files.refseq_bed,
+       bed=paths.ref_files.comp_bed,
        housekeeping_bed=paths.ref_files.housekeeping_bed
     benchmark:
        'benchmark/retrieve_rseqc_beds.tab'
