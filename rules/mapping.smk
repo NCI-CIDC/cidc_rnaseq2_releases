@@ -139,10 +139,11 @@ rule housekeeping_bam:
         'log/{sample}_housekeeping_bam.log'
     conda:
         SOURCEDIR+"/../envs/bedtools.yaml"
+    threads: max(1,min(8,NCORES))
     shell:
         '''
-          echo "bedtools intersect -a {input.bam} -b {input.bed} > {output.bam} && samtools index {output.bam} > {output.bai}" | tee {log}
-          bedtools intersect -a {input.bam} -b {input.bed} > {output.bam} && samtools index {output.bam} > {output.bai} 2>> {log}
+          echo "bedtools intersect -a {input.bam} -b {input.bed} > {output.bam} && samtools index -@ {threads} {output.bam} > {output.bai}" | tee {log}
+          bedtools intersect -a {input.bam} -b {input.bed} > {output.bam} && samtools index -@ {threads} {output.bam} > {output.bai} 2>> {log}
 
           ## Export rule env details
           conda env export --no-builds > info/bedtools.info
