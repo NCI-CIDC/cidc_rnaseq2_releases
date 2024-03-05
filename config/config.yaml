@@ -1,12 +1,12 @@
 ## workflow set up
 # working output dir
-predir: '/media/analysis/rnaseq_output'
+predir: '/media/rima-reference/rnaseq_output'
 # source dir for supporting scripts
-srcdir: '/home/trivittge_nih_gov/cidc_rnaseq/source'
+srcdir: '/media/rima-reference/cidc_rnaseq/source'
 # file to write running log
-log_file: '/media/analysis/rnaseq_output/pipeline.log'
+log_file: '/media/rima-reference/rnaseq_output/pipeline.log'
 # number of CPU cores dedicated to entire workflow
-ncores: 16
+ncores: 60
 
 
 ## output file paths layout file
