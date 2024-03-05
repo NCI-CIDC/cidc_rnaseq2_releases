@@ -92,7 +92,7 @@ Execute the pipeline:
 snakemake --use-conda --cores <ncores>
 
 ## Execute workflow with stdout and stderr logs generated (<ncores> the number of cores for entire workflow):
-snakemake --use-conda --cores <nscores> 2> run.stderr 1> run.stdout
+snakemake --use-conda --cores <ncores> 2> run.stderr 1> run.stdout
 
 ## Force execution of all rules regardless of output present (<ncores> the number of cores for entire workflow):
 snakemake --use-conda --cores <ncores> --forceall
