@@ -25,16 +25,17 @@ rule retrieve_reference_genome:
         'log/retrieve_reference_genome.log'
     params:
         fa_uri=GENOME_FA_URI,
-        gtf_uri=GENOME_GTF_URI
+        gtf_uri=GENOME_GTF_URI,
+        cloud_prog = config["cloud_prog"]
     priority: 1000
     threads: 1
     shell:
         '''
-          echo "gsutil cp {params.fa_uri} {output.fa}.gz && gunzip {output.fa}.gz" | tee {log}
-          gsutil cp {params.fa_uri} {output.fa}.gz && gunzip {output.fa}.gz
+          echo "{params.cloud_prog} cp {params.fa_uri} {output.fa}.gz && gunzip {output.fa}.gz" | tee {log}
+          {params.cloud_prog} cp {params.fa_uri} {output.fa}.gz && gunzip {output.fa}.gz
           
-          echo "gsutil cp {params.gtf_uri} {output.gtf}.gz && gunzip {output.gtf}.gz" | tee -a {log}
-          gsutil cp {params.gtf_uri} {output.gtf}.gz && gunzip {output.gtf}.gz
+          echo "{params.cloud_prog} cp {params.gtf_uri} {output.gtf}.gz && gunzip {output.gtf}.gz" | tee -a {log}
+          {params.cloud_prog} cp {params.gtf_uri} {output.gtf}.gz && gunzip {output.gtf}.gz
         '''
 
 ## Download built star_index files for the specified genome
@@ -49,13 +50,14 @@ rule build_star_index:
     log:
         'log/build_star_index.log'
     params:
-        star_uri=GENOME_STAR_URI
+        star_uri=GENOME_STAR_URI,
+        cloud_prog = config["cloud_prog"]
     priority: 1000
     threads: 1
     shell:
         '''
-          echo "gsutil -m cp -R {params.star_uri} ref_files" | tee {log}
-          gsutil -m cp -R {params.star_uri} ref_files
+          echo "{params.cloud_prog} cp -R {params.star_uri} ref_files" | tee {log}
+          {params.cloud_prog} cp -R {params.star_uri} ref_files
           touch {output} 
         '''
 
@@ -70,14 +72,15 @@ rule retrieve_rseqc_beds:
        'log/retrieve_rseqc_beds.log'
     params:
        bed_uri=RSEQC_BED_URI,
-       housekeeping_uri=RSEQC_HOUSEKEEPING_BED_URI
+       housekeeping_uri=RSEQC_HOUSEKEEPING_BED_URI,
+       cloud_prog = config["cloud_prog"]
     shell:
        '''
-       echo "gsutil cp {params.bed_uri} {output.bed}.gz && gunzip {output.bed}.gz" | tee {log}
-       gsutil cp {params.bed_uri} {output.bed}.gz && gunzip {output.bed}.gz 2>> {log}
+       echo "{params.cloud_prog} cp {params.bed_uri} {output.bed}.gz && gunzip {output.bed}.gz" | tee {log}
+       {params.cloud_prog} cp {params.bed_uri} {output.bed}.gz && gunzip {output.bed}.gz 2>> {log}
 
-       echo "gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip {output.housekeeping_bed}.gz" | tee -a {log}
-       gsutil cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip {output.housekeeping_bed}.gz 2>> {log}
+       echo "{params.cloud_prog} cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip {output.housekeeping_bed}.gz" | tee -a {log}
+       {params.cloud_prog} cp {params.housekeeping_uri} {output.housekeeping_bed}.gz && gunzip {output.housekeeping_bed}.gz 2>> {log}
        '''
 
 ## Retrieve Trinity Cancer Transcriptome Analysis Toolkit (CTAT) human hg38 library for STAR-Fusion 
@@ -91,11 +94,12 @@ rule retrieve_ctat_library:
         'log/retrieve_ctat_library.log'
     params:
         lib=FUSION_LIB_URI,
-        predir=PREDIR
+        predir=PREDIR,
+        cloud_prog = config["cloud_prog"]
     shell:
         '''
-          echo "gsutil -m cp -R {params.lib} ref_files && touch {output.tch}" | tee {log}
-          gsutil -m cp -R {params.lib} ref_files && touch {output.tch} 2>> {log}
+          echo "{params.cloud_prog} cp -R {params.lib} ref_files && touch {output.tch}" | tee {log}
+          {params.cloud_prog} cp -R {params.lib} ref_files && touch {output.tch} 2>> {log}
         '''
 
 ## Retrieve reference datasets for immune repsonse (MSIsensor2) and immume repertoire (TRUST4) modules
@@ -112,14 +116,15 @@ rule retrieve_immune_refs:
     params:
         response_uri=IMMUNE_RESPONSE_URI,
         repertoire_uri=IMMUNE_REPERTOIRE_URI,
-        repertoire_imgt_uri=IMMUNE_REPERTOIRE_IMGT_URI
+        repertoire_imgt_uri=IMMUNE_REPERTOIRE_IMGT_URI,
+        cloud_prog = config["cloud_prog"]
     shell:
         '''
-          echo "gsutil -m cp -R {params.response_uri} ref_files && touch {output.tch}" | tee {log}
-          gsutil -m cp -R {params.response_uri} ref_files && touch {output.tch} 2>> {log}
+          echo "{params.cloud_prog} cp -R {params.response_uri} ref_files && touch {output.tch}" | tee {log}
+          {params.cloud_prog} cp -R {params.response_uri} ref_files && touch {output.tch} 2>> {log}
            
-          echo "gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt}" | tee -a {log}
-          gsutil cp {params.repertoire_uri} {output.bcrtcr} && gsutil cp {params.repertoire_imgt_uri} {output.imgt} 2>> {log}
+          echo "{params.cloud_prog} cp {params.repertoire_uri} {output.bcrtcr} && {params.cloud_prog} cp {params.repertoire_imgt_uri} {output.imgt}" | tee -a {log}
+          {params.cloud_prog} cp {params.repertoire_uri} {output.bcrtcr} && {params.cloud_prog} cp {params.repertoire_imgt_uri} {output.imgt} 2>> {log}
         '''
 
 ## Retrieve Centrifuge index (bacteria, archaea, viruses, and human) for the microbiome module
@@ -133,13 +138,14 @@ rule retrieve_centrifuge_idx:
     log:
         'log/retrieve_centrifuge_idx.log'
     params:
-        cfug_uri=CFUG_REF
+        cfug_uri=CFUG_REF,
+        cloud_prog = config["cloud_prog"]
     shell:
         '''
-          echo "gsutil cp {params.cfug_uri} {output.tar} && tar -xvzf {output.tar} -C ref_files \
+          echo "{params.cloud_prog} cp {params.cfug_uri} {output.tar} && tar -xvzf {output.tar} -C ref_files \
           && touch {output.tch}" | tee {log}
 
-          gsutil cp {params.cfug_uri} {output.tar} && tar -xvzf {output.tar} -C ref_files \
+          {params.cloud_prog} cp {params.cfug_uri} {output.tar} && tar -xvzf {output.tar} -C ref_files \
           && touch {output.tch} 2>> {log}
         '''
 
@@ -152,11 +158,12 @@ rule retrieve_transcripts_fa:
     log:
         'log/retrieve_transcripts_fa.log'
     params:
-        fa_uri=TRANSCRIPTS_FA_URI
+        fa_uri=TRANSCRIPTS_FA_URI,
+        cloud_prog = config["cloud_prog"]
     shell:
         '''
-          echo "gsutil cp {params.fa_uri} {output.fa}" | tee {log}
-          gsutil cp {params.fa_uri} {output.fa} 2>> {log}
+          echo "{params.cloud_prog} cp {params.fa_uri} {output.fa}" | tee {log}
+          {params.cloud_prog} cp {params.fa_uri} {output.fa} 2>> {log}
         '''
 
 ## Clone the IPD-IMGT/HLA repository and set up the database for use in the neoantigen module (arcasHLA).

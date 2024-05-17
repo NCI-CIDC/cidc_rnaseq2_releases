@@ -1,10 +1,10 @@
 ## workflow set up
 # working output dir
-predir: '/media/rima-reference/rnaseq_output'
+predir: '/media/storage/rnaseq_output'
 # source dir for supporting scripts
-srcdir: '/media/rima-reference/cidc_rnaseq/source'
+srcdir: '/home/pendletonmr_nih_gov/p/cidc_rnaseq/source'
 # file to write running log
-log_file: '/media/rima-reference/rnaseq_output/pipeline.log'
+log_file: '/media/storage/rnaseq_output/pipeline.log'
 # number of CPU cores dedicated to entire workflow
 ncores: 60
 
@@ -14,6 +14,7 @@ file_layout: 'config/file_layout.yaml'
 
 
 ## reference genome download locations file
+#reference: 'config/reference_dev.csv'
 reference: 'config/reference.csv'
 
 
@@ -38,5 +39,5 @@ rseqc: 'housekeeping'
 
 
 ## cloud program [gsutil, aws] and bucket location
-cloud_prog: 'gsutil'
+cloud_prog: 'gcloud storage'
 archive_bucket: ''

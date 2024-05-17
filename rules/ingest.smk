@@ -18,7 +18,7 @@ rule getfile:
         fastq1=','.join(FASTQ_1),
         fastq2=','.join(FASTQ_2),
         bam=','.join(BAM),
-        cloud=CLOUD,
+        cloud=config["cloud_prog"],
         output_joined=','.join(expand(paths.input.input_fastq, read=ENDS)) if not BAM_INPUT else paths.input.input_bam
     priority: 2
     threads: max(1,min(8,NCORES))
@@ -26,13 +26,13 @@ rule getfile:
         '''
           echo python3 {params.srcdir}/python/init-getfile.py --src {params.srcdir} --ends {params.ends} \
           --samid {params.samid} --fastq1 {params.fastq1} --fastq2 {params.fastq2} --bam {params.bam} \
-          --cloud {params.cloud} --fastqdump parallel-fastq-dump \
+          --cloud "{params.cloud}" --fastqdump parallel-fastq-dump \
           --sample {params.sample} --output {params.output_joined} \
           > {log}
 
           python3 {params.srcdir}/python/init-getfile.py --src {params.srcdir} --ends {params.ends} \
           --samid {params.samid} --fastq1 {params.fastq1} --fastq2 {params.fastq2} --bam {params.bam} \
-          --cloud {params.cloud} --fastqdump parallel-fastq-dump \
+          --cloud "{params.cloud}" --fastqdump parallel-fastq-dump \
           --sample {params.sample} --output {params.output_joined} \
           2>> {log}
 
