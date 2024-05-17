@@ -15,11 +15,11 @@ file_layout: 'config/file_layout.yaml'
 
 ## reference genome download locations file
 #reference: 'config/reference_dev.csv'
-reference: 'config/reference_dev.csv'
+reference: 'config/reference.csv'
 
 
 ## sample metadata file
-sample_metadata: 'config/sample_metadata_dev.csv'
+sample_metadata: 'config/sample_metadata.csv'
 
 
 ## preprocess options
