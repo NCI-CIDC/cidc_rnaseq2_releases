@@ -93,3 +93,6 @@ arcashla:
     json_genotype: "{sample}/{sample}.genotype.json"
     log: "{sample}/{sample}.genotype.log"
     merge: "merge/{sample}.genotype.json"
+
+multiqc:
+    html: "multiqc_report.html"
