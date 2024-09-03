@@ -1,15 +1,15 @@
 ## Generates MultiQC report for STAR, Salmon, RSeQC, and Picard outputs
 rule multiqc:
     input:
-        star=rules.run_star.output,
-      #  salmon=rules.salmon.output,
-      #  bam_stat=rules.bam_stat.output,
-      #  read_gc=rules.read_gc.output,
-      #  tin_score=rules.tin_score.output,
-      #  read_distribution=rules.read_distribution.output,
-      #  gene_body_coverage=rules.gene_body_coverage.output,
-      #  junction_saturation=rules.junction_saturation.output,
-      #  collect_insert_size=rules.collect_insert_size.output
+        expand(rules.run_star.output, sample=SAMID),
+        expand(rules.salmon.output, sample=SAMID),
+        expand(rules.bam_stat.output, sample=SAMID),
+        expand(rules.read_gc.output, sample=SAMID),
+        expand(rules.tin_score.output, sample=SAMID),
+        expand(rules.read_distribution.output, sample=SAMID),
+        expand(rules.gene_body_coverage.output, sample=SAMID),
+        expand(rules.junction_saturation.output, sample=SAMID),
+        expand(rules.collect_insert_size.output, sample=SAMID)
     output:
         html=paths.multiqc.html
     benchmark:
@@ -22,13 +22,11 @@ rule multiqc:
         star=PREDIR+"/bam",
         salmon=PREDIR+"/salmon",
         rseqc=PREDIR+"/rseqc",
-        dir=PREDIR+"/bam/*._STARgenome",
-        dir2=PREDIR+"/bam/*._STARpass1",
         output=PREDIR+"/multiqc"
     shell:
         '''
-          echo "multiqc {params.star} {params.salmon} {params.rseqc} --ignore {params.dir} {params.dir2} -o {params.output}" | tee {log}
-          multiqc {params.star} {params.salmon} {params.rseqc} --ignore {params.dir} {params.dir2} -o {params.output} 2>> {log}
+          echo "multiqc {params.star} {params.salmon} {params.rseqc} -o {params.output}" | tee {log}
+          multiqc {params.star} {params.salmon} {params.rseqc} -o {params.output} 2>> {log}
          
           ## Export rule env details
           conda env export --no-builds > info/multiqc.info 
