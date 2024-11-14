@@ -2,7 +2,7 @@
 # working output dir
 predir: '/media/storage/rnaseq_output'
 # source dir for supporting scripts
-srcdir: '/home/pendletonmr_nih_gov/p/cidc_rnaseq/source'
+srcdir: '/home/pipeline/cidc_rnaseq/source'
 # file to write running log
 log_file: '/media/storage/rnaseq_output/pipeline.log'
 # number of CPU cores dedicated to entire workflow
