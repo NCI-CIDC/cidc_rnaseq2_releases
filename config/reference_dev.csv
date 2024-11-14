@@ -1,0 +1,12 @@
+﻿ref_file_name,google_bucket_URI,original_URL
+genome_fa,gs://prod-cidc-rnaseq-reference-v1/GRCh38.primary_assembly.genome.fa.gz,https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/GRCh38.primary_assembly.genome.fa.gz
+genome_gtf,gs://prod-cidc-rnaseq-reference-v1/gencode.v37.annotation.gtf.gz,https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_37/gencode.v37.annotation.gtf.gz
+genome_star_index,gs://prod-cidc-rnaseq-reference-v1/star_index,gs://prod-cidc-rnaseq-reference-v1/star_index/Log.out
+centrifuge,gs://prod-cidc-rnaseq-reference-v1/p_compressed+h+v.tar.gz,https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed%2Bh%2Bv.tar.gz
+rseqc_bed,gs://prod-cidc-rnaseq-reference-v1/gencode.v37.comprehensive.bed.gz,gs://prod-cidc-rnaseq-reference-v1/gencode.v37.comprehensive.bed.gz_README.txt
+rseqc_housekeeping_bed,gs://prod-cidc-rnaseq-reference-v1/gencode.v37.housekeeping_genes.bed.gz,gs://prod-cidc-rnaseq-reference-v1/gencode.v37.housekeeping_genes.bed.gz_README.txt
+fusion_lib,gs://prod-cidc-rnaseq-reference-v1/ctat_genome_lib_build_dir,gs://prod-cidc-rnaseq-reference-v1/ctat_genome_lib_build_dir/README.txt
+immune_response_ref,gs://prod-cidc-rnaseq-reference-v1/models_hg38,https://github.com/niu-lab/msisensor2/tree/master/models_hg38
+immune_repertoire_ref,gs://prod-cidc-rnaseq-reference-v1/hg38_bcrtcr.fa,https://github.com/liulab-dfci/TRUST4/blob/master/hg38_bcrtcr.fa
+immune_repertoire_ref_imgt,gs://prod-cidc-rnaseq-reference-v1/human_IMGT+C.fa,https://raw.githubusercontent.com/liulab-dfci/TRUST4/master/human_IMGT%2BC.fa
+transcripts_fa,gs://prod-cidc-rnaseq-reference-v1/gencode.v37.transcripts.fa,gs://prod-cidc-rnaseq-reference-v1/gencode.v37.transcripts.fa_README.txt
