@@ -4,3 +4,9 @@ channels:
     - bioconda
 dependencies:
     - arcas-hla==0.5.0
+    - git
+    - git-lfs
+    - libgfortran=3.0.0
+    - libgcc-ng
+    - libstdcxx-ng
+    # Updated for Ubuntu 24.04 with specific calls for compatibility libraries

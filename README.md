@@ -101,5 +101,4 @@ snakemake --use-conda --cores <ncores> --forceall
 snakemake --use-conda --cores <ncores> --rerun-incomplete
 ```
 
-## Please reach out to CIDC Bioinformatics (CIDCBioinformatics@mail.nih.gov) with any questions or to report any issues concerning this framework.
-## For test data and expected results, please see: CIDC Bioinformatic Pipelines Validation Report - RNA-Seq - Encode Update.pdf
+## Please reach out to Sami Cherikh (cherikhsr@nih.gov) with any questions or to report any issues concerning this framework.
