@@ -1,5 +1,5 @@
 # Base image 
-FROM amd64/ubuntu:20.04
+FROM amd64/ubuntu:24.04
 MAINTAINER Frankie Parks <frankie.parks@bioappdev.org>
 
 #Run all root level commands 1st
@@ -7,7 +7,7 @@ RUN mkdir -p /media/analysis && chmod 777 /media/analysis
 
 
 # Create a user and group used to launch processes
-RUN groupadd -r pipeline -g 1000 && useradd -u 1000 -r -g pipeline -m -d /home/pipeline -s /bin/bash -c "pipeline user" pipeline && chmod 755 /home/pipeline && chown pipeline:pipeline /home/pipeline
+RUN groupadd -r pipeline -g 999 && useradd -u 999 -r -g pipeline -m -d /home/pipeline -s /bin/bash -c "pipeline user" pipeline && chmod 755 /home/pipeline && chown pipeline:pipeline /home/pipeline
 
 ## Update to latest OS packages
 RUN apt-get autoclean && apt-get update && apt-get -y dist-upgrade

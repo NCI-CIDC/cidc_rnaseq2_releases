@@ -2,6 +2,9 @@
 # Usage 
 # After pipeline run:
 # cd /home/pipeline/cidc_rnaseq
+# chmod +x rnaseq-schema-mapping.sh
+# cp rnaseq-schema-mapping.sh /media/storage/rnaseq_output/
+# cd /media/storage/rnaseq_output/
 # ./rnaseq-schema-mapping.sh
 # Wait for cp to complete and proceed with Portal upload
 
